@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MicroMart — Technical Audit &amp; Improvement PRD</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+
+  :root {
+    --ink: #14181f;
+    --muted: #5a6472;
+    --line: #d7dce3;
+    --line-soft: #e9edf2;
+    --accent: #1f4fd8;
+    --accent-soft: #eef2fd;
+    --wash: #f6f8fb;
+    --warn: #8a5300;
+    --warn-soft: #fdf6e7;
+    --bad: #a3262d;
+    --bad-soft: #fde7e7;
+    --good: #1d6b45;
+    --good-soft: #e6f4ec;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    font-family: -apple-system, "Helvetica Neue", "Segoe UI", Arial, "Kohinoor Bangla", sans-serif;
+    color: var(--ink);
+    font-size: 10.2pt;
+    line-height: 1.52;
+    margin: 0;
+  }
+
+  p { margin: 0 0 8pt; }
+  strong { font-weight: 640; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.9pt;
+    background: var(--wash);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+    padding: 0.5pt 3pt;
+  }
+
+  /* ---------- cover ---------- */
+  .cover { height: 245mm; display: flex; flex-direction: column; justify-content: center; break-after: page; }
+  .cover .eyebrow {
+    font-size: 9pt; letter-spacing: 2.4pt; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 10pt;
+  }
+  .cover h1 {
+    font-size: 30pt; line-height: 1.16; margin: 0 0 10pt;
+    font-weight: 700; letter-spacing: -0.6pt;
+  }
+  .cover .sub { font-size: 12.5pt; color: var(--muted); margin: 0 0 26pt; max-width: 130mm; }
+  .cover .rule { height: 3.5pt; width: 54mm; background: var(--accent); margin-bottom: 26pt; }
+  .cover .meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12pt 22pt; max-width: 140mm; }
+  .cover .meta div { border-top: 1px solid var(--line); padding-top: 6pt; }
+  .cover .meta dt { font-size: 8pt; letter-spacing: 1.1pt; text-transform: uppercase; color: var(--muted); margin-bottom: 2pt; }
+  .cover .meta dd { margin: 0; font-size: 10.5pt; font-weight: 600; }
+  .cover .stackline { margin-top: 30pt; font-size: 9.6pt; color: var(--muted); }
+  .cover .stackline b { color: var(--ink); font-weight: 640; }
+
+  /* ---------- headings ---------- */
+  h2 {
+    font-size: 15.5pt; margin: 0 0 3pt; padding-bottom: 5pt;
+    border-bottom: 2px solid var(--ink); font-weight: 700; letter-spacing: -0.25pt;
+    break-after: avoid; break-before: page;
+  }
+  h2 .num { color: var(--accent); margin-right: 7pt; }
+  h2 + .lede { color: var(--muted); font-size: 9.6pt; margin: 6pt 0 12pt; }
+
+  h3 {
+    font-size: 11.4pt; margin: 15pt 0 5pt; font-weight: 680;
+    break-after: avoid;
+  }
+  h4 { font-size: 10pt; margin: 11pt 0 4pt; font-weight: 660; color: var(--muted); break-after: avoid; }
+
+  section { break-inside: auto; }
+  .nobreak { break-inside: avoid; }
+
+  /* ---------- toc ---------- */
+  .toc { break-after: page; }
+  .toc ol { list-style: none; padding: 0; margin: 0; }
+  .toc li {
+    display: flex; align-items: baseline; gap: 8pt;
+    padding: 5.5pt 0; border-bottom: 1px solid var(--line-soft); font-size: 10.4pt;
+  }
+  .toc li .n { color: var(--accent); font-weight: 700; min-width: 20pt; }
+  .toc li .t { font-weight: 600; }
+  .toc li .d { color: var(--muted); font-size: 9pt; margin-left: auto; text-align: right; max-width: 88mm; }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 8pt 0 12pt; font-size: 9.1pt; break-inside: avoid; }
+  thead th {
+    background: var(--ink); color: #fff; text-align: left; font-weight: 620;
+    padding: 5pt 7pt; font-size: 8.4pt; letter-spacing: 0.5pt; text-transform: uppercase;
+  }
+  tbody td { padding: 5pt 7pt; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: var(--wash); }
+  td code { font-size: 8.3pt; }
+  table.tight td, table.tight th { padding: 3.6pt 6pt; }
+  .c-id { white-space: nowrap; font-weight: 640; color: var(--accent); }
+
+  table.long { break-inside: auto; }
+  table.long thead { display: table-header-group; }
+  table.long tr { break-inside: avoid; }
+
+  /* ---------- lists ---------- */
+  ul, ol.body { margin: 0 0 9pt; padding-left: 15pt; }
+  li { margin-bottom: 3.5pt; }
+  ul.ac { list-style: none; padding-left: 0; }
+  ul.ac li { position: relative; padding-left: 15pt; margin-bottom: 3pt; }
+  ul.ac li::before {
+    content: "\2713"; position: absolute; left: 0; top: -0.5pt;
+    color: var(--accent); font-weight: 700; font-size: 9.5pt;
+  }
+
+  /* ---------- callouts ---------- */
+  .note, .warn, .bad {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 8pt 11pt; margin: 10pt 0; font-size: 9.4pt; break-inside: avoid;
+  }
+  .warn { border-left-color: #c99a2e; background: var(--warn-soft); }
+  .bad { border-left-color: var(--bad); background: var(--bad-soft); }
+  .note b, .warn b, .bad b { display: block; margin-bottom: 2pt; font-size: 8.3pt; letter-spacing: 0.9pt; text-transform: uppercase; }
+  .note b { color: var(--accent); }
+  .warn b { color: var(--warn); }
+  .bad b { color: var(--bad); }
+
+  /* ---------- badges ---------- */
+  .p { font-size: 7.6pt; font-weight: 700; padding: 1.4pt 5pt; border-radius: 9pt; letter-spacing: 0.5pt; white-space: nowrap; }
+  .p0 { background: #fde7e7; color: #a3262d; }
+  .p1 { background: #e7f0fd; color: #1c47b8; }
+  .p2 { background: #eceff3; color: #5a6472; }
+  .ok { background: var(--good-soft); color: var(--good); }
+
+  .eff { font-size: 7.6pt; font-weight: 700; padding: 1.4pt 5pt; border-radius: 3pt; background: var(--wash); border: 1px solid var(--line); color: var(--muted); }
+
+  /* ---------- finding blocks ---------- */
+  .finding { break-inside: avoid; margin: 0 0 13pt; padding-top: 9pt; border-top: 1px solid var(--line); }
+  .finding .fhead { display: flex; align-items: baseline; gap: 8pt; margin-bottom: 4pt; }
+  .finding .fhead h3 { margin: 0; flex: 1; }
+  .finding .loc {
+    font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.2pt;
+    color: var(--muted); margin: 0 0 5pt;
+  }
+  .fix { background: var(--wash); border: 1px solid var(--line-soft); border-left: 3px solid var(--good); padding: 7pt 10pt; margin: 6pt 0 0; }
+  .fix > b { display: block; font-size: 8.3pt; letter-spacing: 0.9pt; text-transform: uppercase; color: var(--good); margin-bottom: 3pt; }
+
+  pre.code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.1pt; line-height: 1.45;
+    background: #fff; border: 1px solid var(--line);
+    padding: 7pt 9pt; margin: 6pt 0; break-inside: avoid;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  pre.dia {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.1pt; line-height: 1.42;
+    background: var(--wash); border: 1px solid var(--line);
+    padding: 10pt 12pt; margin: 9pt 0 12pt; break-inside: avoid;
+    white-space: pre; overflow: hidden;
+  }
+
+  .kv { display: grid; grid-template-columns: 42mm 1fr; gap: 3pt 10pt; font-size: 9.4pt; margin: 6pt 0 11pt; }
+  .kv dt { font-weight: 640; color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  .end { margin-top: 16pt; padding-top: 8pt; border-top: 1px solid var(--line); font-size: 8.6pt; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="eyebrow">Technical Audit &amp; Improvement PRD</div>
+  <h1>MicroMart<br>Engineering Quality Review</h1>
+  <p class="sub">A findings register, remediation plan and industry-readiness roadmap for the MicroMart single-vendor e-commerce platform.</p>
+  <div class="rule"></div>
+  <dl class="meta">
+    <div><dt>Version</dt><dd>1.0 — For Implementation</dd></div>
+    <div><dt>Date</dt><dd>6 September 2026</dd></div>
+    <div><dt>Market</dt><dd>Bangladesh · BDT (৳)</dd></div>
+    <div><dt>Team</dt><dd>1 full-stack developer</dd></div>
+    <div><dt>Findings</dt><dd>23 open · 5 assessed, no action</dd></div>
+    <div><dt>Estimated Effort</dt><dd>10–15 working days</dd></div>
+  </dl>
+  <p class="stackline">
+    <b>Stack:</b> Django 5.2 + DRF &nbsp;·&nbsp; MySQL 8 &nbsp;·&nbsp; Vite + React 18 &nbsp;·&nbsp; Tailwind CSS v4
+  </p>
+</div>
+
+<!-- ============ TOC ============ -->
+<div class="toc">
+  <h2 style="break-before:avoid"><span class="num">—</span>Contents</h2>
+  <ol>
+    <li><span class="n">1</span><span class="t">Executive Summary</span><span class="d">Verdict, headline findings, what is not in question</span></li>
+    <li><span class="n">2</span><span class="t">Scope &amp; Method</span><span class="d">What was reviewed, what was executed, what was not</span></li>
+    <li><span class="n">3</span><span class="t">System Overview</span><span class="d">Architecture, apps, routes, test inventory</span></li>
+    <li><span class="n">4</span><span class="t">Findings Register</span><span class="d">F1–F23 with evidence, impact and fixes</span></li>
+    <li><span class="n">5</span><span class="t">Assessed — No Action</span><span class="d">Five items examined and deliberately not changed</span></li>
+    <li><span class="n">6</span><span class="t">Remediation Roadmap</span><span class="d">Phases 0–4, sequencing gates, verification</span></li>
+    <li><span class="n">7</span><span class="t">Industry-Standard Additions</span><span class="d">Ranked by impressiveness per unit effort</span></li>
+    <li><span class="n">8</span><span class="t">Risks &amp; Trade-offs</span><span class="d">Where a fix can make things worse</span></li>
+    <li><span class="n">9</span><span class="t">Appendix</span><span class="d">Verification commands, environment notes</span></li>
+  </ol>
+</div>
+
+<!-- ============ 1 ============ -->
+<section>
+<h2><span class="num">1</span>Executive Summary</h2>
+<p class="lede">What MicroMart is, the state it is in, and the three things worth fixing first.</p>
+
+<p><strong>MicroMart</strong> is a single-vendor electronics e-commerce web application for the Bangladesh market: a React storefront and a role-gated admin dashboard over a Django REST API, with a 117-product catalogue, PC-builder compatibility engine, coupon engine, review moderation and Cash-on-Delivery checkout.</p>
+
+<h3>Verdict</h3>
+<p>The codebase is <strong>materially better than typical</strong> for a project of this scope. The architecture is disciplined and the hard problems — the ones most implementations get wrong — are correct. This audit found <strong>no defect in the order state machine, the inventory ledger, the payment verification path, or the money arithmetic</strong>.</p>
+
+<p>What it did find is a narrower and more specific class of problem: a security control that is configured but not active, a user-facing statement that contradicts the code, and several safety nets that were never installed. None of these require re-architecting anything.</p>
+
+<div class="note">
+  <b>Framing</b>
+  Every item in this document is an <strong>addition to working code</strong>, not a correction of a flawed design. No finding proposes rewriting the services layer, the order state machine, or the payments module. Those are the parts of this project worth defending.
+</div>
+
+<h3>The three that matter most</h3>
+
+<table class="long">
+  <thead><tr><th style="width:12mm">ID</th><th style="width:52mm">Finding</th><th>Why it leads</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="c-id">F2+F3</td>
+      <td><strong>Rate limiting is inert</strong></td>
+      <td>Throttle rates are tuned and written, but <code>DEFAULT_THROTTLE_CLASSES</code> is never set, so DRF applies none of them. The codebase <em>reads</em> as protected. Compounded by an unconfigured cache, which would make counters per-worker even once enabled. This is the only finding rated critical.</td>
+    </tr>
+    <tr>
+      <td class="c-id">F1</td>
+      <td><strong>The UI contradicts a security property</strong></td>
+      <td>The account page tells users that changing their password does not sign them out elsewhere. The backend does exactly that, and a passing test pins it. A user who suspects their account is compromised is being told the safe action will not work.</td>
+    </tr>
+    <tr>
+      <td class="c-id">F12</td>
+      <td><strong>3,249 lines of tests never run</strong></td>
+      <td>A 13-spec Playwright suite, including a 1,030-line accessibility spec, exists and is excluded from CI. The work is already paid for; only the wiring is missing. Highest value per unit of effort in this document.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>What is not in question</h3>
+<p>Verified directly against the source during this audit and found correct:</p>
+<ul class="ac">
+  <li><strong>Oversell prevention</strong> — <code>SELECT ... FOR UPDATE</code> taken in primary-key order, stock re-checked inside the lock, backed by a database <code>CHECK (stock &gt;= 0)</code> constraint.</li>
+  <li><strong>Payment verification</strong> — the IPN handler takes the order reference from the gateway's <em>validation response</em>, never from the notification body, so a forged payload cannot aim a genuine small payment at a large order. The browser callback reads and writes nothing.</li>
+  <li><strong>Object-level authorisation</strong> — a miss returns 404, never 403, so the identifier space is not confirmed. Admin permission classes still correctly return 403, because the handler catches Django's <code>PermissionDenied</code> rather than DRF's.</li>
+  <li><strong>Money</strong> — <code>DECIMAL(12,2)</code> throughout, serialised as decimal strings, never floats.</li>
+  <li><strong>Order snapshotting</strong> — product name, variant label, SKU, unit price, shipping address and tax rate are copied onto the order, so later catalogue edits cannot rewrite history.</li>
+  <li><strong>Single source of business logic</strong> — the storefront and admin surfaces call the same service functions, so rules cannot drift between them.</li>
+</ul>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+<h2><span class="num">2</span>Scope &amp; Method</h2>
+<p class="lede">What was inspected, what was actually executed, and — importantly — what was not.</p>
+
+<h3>2.1 Coverage</h3>
+<p>Full-repository review of the Django backend (11 apps, ~43,600 lines of Python) and the React frontend (~109 components and modules), plus CI configuration, documentation and deployment artifacts. Service modules holding business invariants were read in full rather than sampled.</p>
+
+<h3>2.2 Checks executed</h3>
+<table class="tight">
+  <thead><tr><th style="width:58mm">Check</th><th style="width:24mm">Result</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>manage.py check</code></td><td><span class="p ok">PASS</span></td><td>System check identified no issues (0 silenced).</td></tr>
+    <tr><td><code>makemigrations --check</code></td><td><span class="p ok">PASS</span></td><td>No model drift against migrations.</td></tr>
+    <tr><td><code>npm run build</code></td><td><span class="p ok">PASS</span></td><td>Built in 9.05s. Admin and PC-Builder chunks split as designed.</td></tr>
+    <tr><td><code>npm run lint</code> (oxlint)</td><td><span class="p ok">PASS</span></td><td>0 errors, 24 warnings.</td></tr>
+    <tr><td>Runtime introspection</td><td><span class="p ok">DONE</span></td><td>Views instantiated to observe applied throttles and cache backend — see §2.4.</td></tr>
+    <tr><td>Backend test suite</td><td><span class="p p0">NOT RUN</span></td><td>See §2.3. This is a genuine gap in the audit.</td></tr>
+  </tbody>
+</table>
+
+<h3>2.3 What was <em>not</em> verified</h3>
+<div class="warn">
+  <b>Limitation of this audit</b>
+  The backend test suite — approximately <strong>1,009 test functions</strong> — <strong>was never executed</strong>. No MySQL credentials were available in the review environment, and the suite cannot fall back to SQLite: migration <code>catalog/0003</code> issues <code>CREATE FULLTEXT INDEX</code>, which fails with <code>near "FULLTEXT": syntax error</code>. Several tests also depend on real row locks. Consequently, <strong>every statement in this document about test outcomes is a statement about test <em>code</em>, not about a passing run.</strong> The suite should be run before Phase 1 begins, to establish a green baseline.
+</div>
+
+<h3>2.4 Evidence for the headline finding</h3>
+<p>F2 is asserted from runtime behaviour, not from reading settings. Instantiating the views and asking DRF what it would apply produced:</p>
+<pre class="code">DEFAULT_THROTTLE_CLASSES present : False
+DEFAULT_THROTTLE_RATES           : {'anon': '120/min', 'user': '300/min',
+                                    'auth': '2000/min', 'order_lookup': '20/min'}
+Effective default throttles      : []
+
+ProductListView.get_throttles()      = []
+CheckoutQuoteView.get_throttles()    = []
+OrderListCreateView.get_throttles()  = []
+RefreshView.get_throttles()          = []
+LoginView.get_throttles()            = [ScopedRateThrottle]   &lt;- only auth views
+
+Cache backend in use             : LocMemCache
+EMAIL_TIMEOUT                    : None</pre>
+<p>The tuned <code>anon</code> and <code>user</code> rates are therefore dead configuration: they are read by nothing.</p>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+<h2><span class="num">3</span>System Overview</h2>
+<p class="lede">The shape of the system as it actually exists today.</p>
+
+<h3>3.1 Architecture</h3>
+<pre class="dia">Browser (mobile-first, 360px up)
+     |
+     +-- React SPA (Vite build)  -- storefront + admin route groups, code-split
+     |
+     +-- Django + DRF  /api/v1/
+              |
+              +-- MySQL 8 (InnoDB, utf8mb4)
+              +-- Media storage (local dev / S3 in prod)
+              +-- SMTP (transactional email, sent inline)
+
+SSLCommerz --IPN (server-to-server)--> /api/v1/payments/ipn/   [validated]
+Customer   --redirect--------------->  /payments/callback/     [display only]</pre>
+
+<p>Backend layering is <code>models → services → serializers → views</code>. All business logic lives in <code>apps/*/services/</code>, and both the storefront and admin APIs call the same service functions.</p>
+
+<h3>3.2 Application inventory</h3>
+<p>Route and test counts measured directly from source. Note that these correct the figures in <code>docs/HANDOFF.md</code> §1, which understate the build considerably (see F21).</p>
+
+<table class="tight long">
+  <thead><tr><th>App</th><th style="width:18mm">Routes</th><th style="width:20mm">Services</th><th style="width:20mm">Tests</th><th>Responsibility</th></tr></thead>
+  <tbody>
+    <tr><td>accounts</td><td>9</td><td>2</td><td>48</td><td>Auth, JWT, addresses, password reset</td></tr>
+    <tr><td>catalog</td><td>8</td><td>3</td><td>242</td><td>Products, variants, search, facets, inventory</td></tr>
+    <tr><td>cart</td><td>4</td><td>1</td><td>114</td><td>Server-side cart, guest merge</td></tr>
+    <tr><td>orders</td><td>4</td><td>5</td><td>196</td><td>Checkout, placement, state machine, totals</td></tr>
+    <tr><td>payments</td><td>3</td><td>2</td><td>62</td><td>SSLCommerz session, IPN validation</td></tr>
+    <tr><td>promotions</td><td>0</td><td>1</td><td>87</td><td>Coupons (admin routes only — see F23)</td></tr>
+    <tr><td>reviews</td><td>4</td><td>2</td><td>80</td><td>Reviews, moderation, wishlist</td></tr>
+    <tr><td>shipping</td><td>1</td><td>1</td><td>36</td><td>Zones, rate quoting</td></tr>
+    <tr><td>dashboard</td><td>7</td><td>3</td><td>93</td><td>Admin metrics, store settings</td></tr>
+    <tr><td>builds</td><td>5</td><td>2</td><td>45</td><td>PC builder, compatibility engine</td></tr>
+    <tr><td>common</td><td>—</td><td>—</td><td>6</td><td>MoneyField, permissions, phone normalisation</td></tr>
+  </tbody>
+</table>
+
+<h3>3.3 Test inventory</h3>
+<div class="kv">
+  <dt>Backend</dt><dd><strong>1,009</strong> test functions across ~60 modules (≈1,358 collected after parametrisation). Never executed in this audit — see §2.3.</dd>
+  <dt>Frontend e2e</dt><dd><strong>3,249</strong> lines across 13 Playwright specs, including <code>a11y.spec.js</code> at 1,030 lines. <strong>Never run in CI</strong> (F12).</dd>
+  <dt>Frontend unit</dt><dd><strong>Zero.</strong> No test runner is installed (F5).</dd>
+</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+<h2><span class="num">4</span>Findings Register</h2>
+<p class="lede">23 findings. Every location was confirmed against source; every fix is concrete.</p>
+
+<table class="tight long">
+  <thead><tr><th style="width:12mm">ID</th><th style="width:18mm">Sev</th><th style="width:60mm">Finding</th><th>Area</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F1</td><td><span class="p p0">P0</span></td><td>UI contradicts a security property</td><td>Frontend / docs</td></tr>
+    <tr><td class="c-id">F2</td><td><span class="p p0">P0</span></td><td>Global throttling inert</td><td>Backend settings</td></tr>
+    <tr><td class="c-id">F3</td><td><span class="p p0">P0</span></td><td>No shared cache backend</td><td>Backend settings</td></tr>
+    <tr><td class="c-id">F4</td><td><span class="p p0">P0</span></td><td>No ErrorBoundary anywhere</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F5</td><td><span class="p p0">P0</span></td><td>No frontend unit test layer</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F6</td><td><span class="p p1">P1</span></td><td>Refresh endpoint unthrottled</td><td>Backend</td></tr>
+    <tr><td class="c-id">F7</td><td><span class="p p1">P1</span></td><td>Email verification unthrottled</td><td>Backend</td></tr>
+    <tr><td class="c-id">F8</td><td><span class="p p1">P1</span></td><td>Checkout quote / placement unthrottled</td><td>Backend</td></tr>
+    <tr><td class="c-id">F9</td><td><span class="p p1">P1</span></td><td>Zero observability</td><td>Ops</td></tr>
+    <tr><td class="c-id">F10</td><td><span class="p p1">P1</span></td><td>Exception handler does not log</td><td>Backend</td></tr>
+    <tr><td class="c-id">F11</td><td><span class="p p1">P1</span></td><td><code>EMAIL_TIMEOUT</code> unset</td><td>Backend</td></tr>
+    <tr><td class="c-id">F12</td><td><span class="p p1">P1</span></td><td>Playwright suite excluded from CI</td><td>CI</td></tr>
+    <tr><td class="c-id">F13</td><td><span class="p p1">P1</span></td><td>CI asymmetry, no coverage or audit</td><td>CI</td></tr>
+    <tr><td class="c-id">F14</td><td><span class="p p2">P2</span></td><td>No OpenAPI schema</td><td>Docs</td></tr>
+    <tr><td class="c-id">F15</td><td><span class="p p2">P2</span></td><td>No static social meta tags</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F16</td><td><span class="p p2">P2</span></td><td>Validation bifurcated across two idioms</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F17</td><td><span class="p p2">P2</span></td><td>Fetch failures render as empty states</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F18</td><td><span class="p p2">P2</span></td><td>Sitemap uncapped and uncached</td><td>Backend</td></tr>
+    <tr><td class="c-id">F19</td><td><span class="p p2">P2</span></td><td><code>.gitignore</code> blocks any env example</td><td>Frontend</td></tr>
+    <tr><td class="c-id">F20</td><td><span class="p p2">P2</span></td><td>Documented architecture has no artifacts</td><td>Deployment</td></tr>
+    <tr><td class="c-id">F21</td><td><span class="p p2">P2</span></td><td>Documentation contradicts the code</td><td>Docs</td></tr>
+    <tr><td class="c-id">F22</td><td><span class="p p2">P2</span></td><td>README lists built features as "future"</td><td>Docs</td></tr>
+    <tr><td class="c-id">F23</td><td><span class="p p2">P2</span></td><td>Empty URL stub still mounted</td><td>Backend</td></tr>
+  </tbody>
+</table>
+
+<h3 style="break-before:page">4.1 P0 — Correctness and security</h3>
+
+<div class="finding">
+  <div class="fhead"><span class="p p0">P0</span><h3>F1 · The UI states the opposite of a security property</h3></div>
+  <p class="loc">frontend/src/features/account/ChangePasswordPage.jsx:100 (and comment at :16) · backend/apps/accounts/services/auth.py:221 · docs/HANDOFF.md §4</p>
+  <p>The account page displays: <em>"changing your password here does not yet sign you out on other devices."</em> This was true once. It is not true now — <code>change_password()</code> calls <code>revoke_all_sessions(user)</code>, which blacklists every outstanding refresh token, and the behaviour is pinned by <code>test_changing_the_password_invalidates_every_existing_refresh_token</code>.</p>
+  <p><strong>Impact.</strong> This is not a cosmetic defect. Someone changes a password precisely when they believe their account is compromised, and this note tells them the action will not evict the intruder. It may push a user toward a worse decision at the worst possible moment. The security work was done correctly and is being disclaimed.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0 0 5pt">Replace the note with the truth, and state it as a feature rather than a footnote:</p>
+    <pre class="code">For your security, changing your password signs you out on all
+other devices. You will stay signed in here.</pre>
+    <p style="margin:5pt 0 0">Also update the misleading comment block at <code>:16</code>, and mark <code>docs/HANDOFF.md</code> §4 <strong>RESOLVED</strong> in the style that file already uses. Consider surfacing "Signed out on all other devices" in the success message.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p0">P0</span><h3>F2 · Global rate limiting is configured but inert</h3></div>
+  <p class="loc">backend/config/settings/base.py:118–138</p>
+  <p><code>REST_FRAMEWORK</code> defines <code>DEFAULT_THROTTLE_RATES</code> with <code>anon: 120/min</code> and <code>user: 300/min</code>. It never defines <code>DEFAULT_THROTTLE_CLASSES</code>. In DRF, rates without classes are inert — see the runtime evidence in §2.4.</p>
+  <p><strong>Impact.</strong> Only five views throttle anything, all via explicit <code>ScopedRateThrottle</code>. Everything else is unlimited: product list, search suggest, checkout quote, order placement, cart mutation, wishlist, PC-builder, and every admin CRUD endpoint. The danger is not merely the absent limit — it is that the tuned rates make the codebase <em>read</em> as protected, and a passing single-process login-throttle test reinforces that impression.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <pre class="code">"DEFAULT_THROTTLE_CLASSES": (
+    "rest_framework.throttling.AnonRateThrottle",
+    "rest_framework.throttling.UserRateThrottle",
+),</pre>
+    <p style="margin:5pt 0 0"><strong>Must ship in the same change as F3.</strong> Add a regression test that calls an endpoint with no explicit throttle — <code>GET /api/v1/products/</code> — 121 times and asserts 429. That test fails today; passing it is the proof the fix is real.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p0">P0</span><h3>F3 · No cache backend, so throttle counters would be per-worker</h3></div>
+  <p class="loc">backend/config/settings/base.py — no <code>CACHES</code> key</p>
+  <p>With <code>CACHES</code> undefined, Django falls back to <code>LocMemCache</code> (confirmed at runtime). DRF stores throttle counters in the default cache. Under Gunicorn with N workers, a <code>10/min</code> limit becomes an effective <code>10×N/min</code>, and counters reset whenever a worker recycles.</p>
+  <p><strong>Impact.</strong> Fixing F2 without this yields throttling that is real in tests and porous in production — arguably worse than none, because it would be trusted.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <pre class="code">CACHES = {"default": env.cache("CACHE_URL", default="locmemcache://")}</pre>
+    <p style="margin:5pt 0 0"><code>django-environ</code> already provides <code>env.cache()</code> — no new parsing dependency. In <code>prod.py</code>, fail fast if the backend is still LocMem, matching the existing guard style used for the SameSite/CORS pairing. Redis or Django's <code>DatabaseCache</code> are both acceptable; see §8 on the trade-off.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p0">P0</span><h3>F4 · No error boundary anywhere in the React tree</h3></div>
+  <p class="loc">frontend/src/main.jsx · frontend/src/routes/index.jsx</p>
+  <p>A repository-wide search for <code>ErrorBoundary</code>, <code>componentDidCatch</code>, <code>getDerivedStateFromError</code> and <code>errorElement</code> returns zero matches. React Router v7 is in use and its per-route <code>errorElement</code> is available and unused.</p>
+  <p><strong>Impact.</strong> Any render-phase throw unmounts the entire tree: the user gets a blank white page with no message and no recovery path. A single unexpected <code>null</code> from the API turns one broken panel into a total blackout. Chunk-load failures after a deploy — a long-lived tab requesting a hashed asset that no longer exists — fail the same way.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Two layers. A per-route <code>errorElement</code> on the top-level storefront and admin route objects rendering a new <code>src/pages/ErrorPage.jsx</code> that uses <code>useRouteError()</code> — this keeps the layout chrome so the user can navigate away. Plus one class <code>ErrorBoundary</code> wrapping <code>&lt;App /&gt;</code> in <code>main.jsx</code> as the outermost net. Style it to match the existing <code>NotFoundPage</code> so it reads as intentional.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p0">P0</span><h3>F5 · No frontend unit test layer exists</h3></div>
+  <p class="loc">frontend/package.json — no runner, no <code>test</code> script, 0 test files under <code>src/</code></p>
+  <p>No Vitest, Jest, or Testing Library appears in dependencies, even transitively. The contrast with 1,009 backend tests is the single most visible asymmetry in the repository.</p>
+  <p><strong>Impact.</strong> Pure, high-risk modules have no coverage: <code>lib/money.js</code> (BDT formatting — a rounding bug here is a financial bug, and its symbol substitution depends on ICU behaviour that varies by Node version), the four Zod schema files including the Bangladesh phone regex, the four Zustand stores, and <code>checkout/paymentReturn.js</code> on the money path.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Add <code>vitest</code>, <code>@vitest/coverage-v8</code>, <code>@testing-library/react</code>, <code>@testing-library/user-event</code>, <code>jsdom</code>. Configure inside the existing <code>vite.config.js</code> so the <code>@</code> alias is reused and no second config file appears. Test in this order: <code>money.js</code> → Zod schemas → stores → <code>paymentReturn.js</code>. Record the resulting coverage number in the README; the delta from zero is itself the artifact.</p>
+  </div>
+</div>
+
+<h3 style="break-before:page">4.2 P1 — Unthrottled endpoints</h3>
+<p>These follow from F2 and should be fixed alongside it. Each needs a deliberate scope rather than a blanket rate.</p>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F6 · Token refresh is unauthenticated, unthrottled, and writes a row per call</h3></div>
+  <p class="loc">backend/apps/accounts/views.py:75</p>
+  <p><code>RefreshView</code> is <code>AllowAny</code> with no throttle, and every call performs a database write (<code>token.blacklist()</code>) plus a user lookup — an unauthenticated write-amplification vector.</p>
+  <div class="fix">
+    <b>Fix — give it its own scope, not <code>auth</code></b>
+    <pre class="code"># base.py DEFAULT_THROTTLE_RATES
+"refresh": "60/min",
+
+# apps/accounts/views.py
+throttle_classes = [ScopedRateThrottle]
+throttle_scope = "refresh"</pre>
+    <p style="margin:5pt 0 0">It must <strong>not</strong> share the <code>auth</code> scope: <code>App.jsx</code> refreshes on every full page load, so sharing the login budget would break normal browsing. Note that <code>config/settings/dev.py:23–42</code> currently claims refresh <em>does</em> share that scope — it has no scope at all. Correct that comment as part of this change (F21).</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F7 · Email verification is unthrottled</h3></div>
+  <p class="loc">backend/apps/accounts/views.py:129</p>
+  <p><code>VerifyEmailView</code> accepts a raw token and performs an indexed lookup with no rate limit. Tokens are <code>secrets.token_urlsafe(32)</code>, so <strong>this is a database-load concern, not a token-guessing one</strong> — the search space is not brute-forceable, and the fix comment should say so rather than overclaim.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Apply the existing <code>auth</code> scope (10/min). A user clicks a verification link once, perhaps twice.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F8 · Checkout quote is an unthrottled coupon-enumeration oracle</h3></div>
+  <p class="loc">backend/apps/orders/views.py:45 (quote), :70 (placement)</p>
+  <p><code>CheckoutQuoteView</code> is <code>AllowAny</code> and unthrottled, and returns distinguishable <code>COUPON_*</code> codes — an attacker can enumerate the coupon namespace at line rate and learn precisely why each code failed. Order placement is likewise unthrottled, permitting inventory-exhausting and table-flooding submissions.</p>
+  <div class="bad" style="margin:6pt 0">
+    <b>Do not flatten the error codes</b>
+    Distinguishable codes (<code>COUPON_EXPIRED</code> vs <code>COUPON_MIN_ORDER_NOT_MET</code>) are a genuine UX asset that the storefront branches on. Degrading the error contract would be a regression. The correct mitigation is rate limiting plus a purpose-built endpoint.
+  </div>
+  <div class="fix">
+    <b>Fix</b>
+    <pre class="code"># base.py DEFAULT_THROTTLE_RATES
+"checkout":    "30/min",   # chattier than a page view: district + coupon edits
+"place_order": "10/min",   # a shopper places one order
+
+# OrderListCreateView — mirror the existing get_permissions() pattern
+def get_throttles(self):
+    if self.request.method == "POST":
+        return [ScopedRateThrottle()]
+    return super().get_throttles()</pre>
+    <p style="margin:5pt 0 0">Then add <code>POST /api/v1/coupons/validate/</code> in the empty <code>promotions/urls.py</code> stub (F23), delegating to the existing coupon service. This gives checkout a cheap purpose-built call and lets the coupon question be throttled independently of the pricing question.</p>
+  </div>
+</div>
+
+<h3>4.3 P1 — Operational gaps</h3>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F9 · No observability of any kind</h3></div>
+  <p class="loc">backend/config/ — no health route, no error tracking, no request correlation</p>
+  <p>Absent: error tracking (Sentry or equivalent), health/readiness endpoints, structured logging, request IDs, metrics. Logging is a plain <code>StreamHandler</code> with a human-readable format. Outside the payments module — which has good logging discipline — the codebase logs nothing at all.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0 0 5pt">Add <code>apps/common/health.py</code> with a <strong>split</strong> liveness/readiness pair mounted at the root (<code>/healthz/</code>, <code>/readyz/</code>), not under <code>/api/v1/</code> — these are infrastructure, not versioned API. Liveness must never fail for an external reason, or an orchestrator will restart a healthy app because the database blinked; readiness checks database and cache reachability and returns 503 when degraded.</p>
+    <p style="margin:0">Add a <code>RequestIDMiddleware</code> that honours or generates <code>X-Request-ID</code>, echoes it in the response, and exposes it to logging — then feed it into the F10 logger so a 500 in the log can be matched to the exact response a user saw. Sentry last, guarded on <code>SENTRY_DSN</code> with <code>send_default_pii=False</code>.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F10 · Unhandled 500s leave no structured record</h3></div>
+  <p class="loc">backend/config/exceptions.py — no logger imported</p>
+  <p>The custom exception handler has no logging. Unhandled exceptions reach Django's default logger with no view context and no correlation id; with <code>DEBUG=False</code> the client gets an opaque 500 and there is no other record.</p>
+  <div class="fix">
+    <b>Fix — log in one branch only</b>
+    <pre class="code">response = drf_exception_handler(exc, context)
+if response is None:
+    logger.exception("Unhandled exception in %s %s (view=%s)", ...)
+    return None</pre>
+    <p style="margin:5pt 0 0"><strong>Placement is load-bearing.</strong> <code>response is None</code> is precisely the "DRF could not turn this into an HTTP error" path — the true 500. Logging at the <code>Http404</code> or <code>DomainError</code> branches would flood the log with ordinary traffic, since this application's 404-not-403 design makes authorisation misses routine.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F11 · Outbound SMTP has no timeout</h3></div>
+  <p class="loc">backend/config/settings/base.py:194–201 · backend/apps/accounts/services/auth.py:136–160</p>
+  <p><code>EMAIL_TIMEOUT</code> is unset (verified <code>None</code>), so <code>smtplib</code> inherits the OS socket default — potentially minutes. <code>request_password_reset</code> additionally sends inline, while <code>register_user</code> correctly defers via <code>transaction.on_commit</code>. <code>fail_silently=True</code> prevents an error but does <em>not</em> prevent the block.</p>
+  <p><strong>Impact.</strong> An unreachable-but-not-refusing mail host pins a Gunicorn worker per request. The endpoint is <code>AllowAny</code>, so this is cheap to trigger.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <pre class="code">EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)</pre>
+    <div class="warn" style="margin:6pt 0 0">
+      <b>The obvious second half is a no-op</b>
+      Moving the send into <code>transaction.on_commit</code> changes nothing on its own: <code>request_password_reset</code> is <strong>not</strong> wrapped in <code>@transaction.atomic</code> (verified), and outside an atomic block <code>on_commit</code> executes its callback immediately. <code>EMAIL_TIMEOUT</code> is the fix that actually bounds worker blocking. Deferral is cosmetic symmetry unless atomicity is added too.
+    </div>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F12 · A substantial test suite never runs</h3></div>
+  <p class="loc">.github/workflows/ci.yml:80–105 — frontend job runs lint and build only</p>
+  <p>The repository contains <strong>3,249 lines across 13 Playwright specs</strong> — browse, guest checkout, signed-in checkout, cart merge, six admin specs, and a 1,030-line accessibility spec covering axe rules, keyboard operation, touch targets and focus traps. <strong>None of it executes in CI.</strong> The Playwright config even reads <code>process.env.CI</code>, implying an intent that was never wired up.</p>
+  <p><strong>Impact.</strong> The most impressive artifact in the repository is invisible, and regressions in accessibility or the checkout path are caught by nothing.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Add a third CI job reusing the <code>mysql:8.4</code> service block from the backend job: install both stacks, migrate, <code>seed_demo</code>, start Django and the Vite preview, then <code>npx playwright test</code>. Cache <code>~/.cache/ms-playwright</code>, upload the HTML report on failure, and set <code>retries: 2</code>. Run it non-blocking for a week before making it required. <strong>Sequencing:</strong> this needs the dev-environment throttle relaxation from F2 first, or the whole suite will 429.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p1">P1</span><h3>F13 · CI is asymmetric and has no quality gate</h3></div>
+  <p class="loc">.github/workflows/ci.yml</p>
+  <p>The frontend job lints; the backend job does not. Neither measures coverage. There is no dependency audit, no Dependabot configuration, no security scanning, and the lint step lacks <code>--max-warnings=0</code> so its 24 warnings can never fail a build.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Add <code>pytest-cov</code> with <code>--cov=apps --cov=config</code>; add <code>ruff</code> (which replaces flake8, isort and black-check in one binary, and whose <code>S</code> ruleset covers what Bandit would report without the noise); add <code>pip-audit</code> and <code>npm audit</code> as non-blocking steps. <strong>Measure the baseline before setting a gate</strong>, then set <code>--cov-fail-under</code> just <em>below</em> it — an aspirational gate is one you disable within a week.</p>
+  </div>
+</div>
+
+<h3 style="break-before:page">4.4 P2 — Quality and polish</h3>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F14 · No machine-readable API contract</h3></div>
+  <p class="loc">backend/requirements/ — no <code>drf-spectacular</code> or <code>drf-yasg</code></p>
+  <p>Four hand-written contract documents exist in <code>docs/</code> and are genuinely good — but they are prose that can drift from the code, and there is no generated schema, no <code>/schema/</code> and no browsable docs route for roughly 50 endpoints across two consuming surfaces.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Add <code>drf-spectacular</code>; mount Swagger UI at <code>/api/docs/</code>. Budget effort for three known friction points: the custom error envelope needs declaring once as a component; <code>OrderListCreateView</code> has method-dependent serializers <em>and</em> permissions; and <code>ProductListView</code> injects <code>facets</code> into the paginated response, which introspection cannot see. Add a CI step running <code>spectacular --fail-on-warn</code> so the schema cannot rot.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F15 · Shared links preview blank</h3></div>
+  <p class="loc">frontend/index.html:3–15 · frontend/src/lib/seo.js</p>
+  <p>The HTML shell carries a title, theme colour and icons but <strong>no <code>description</code>, no <code>og:*</code>, no <code>twitter:*</code></strong>. All meta is injected client-side. Facebook, WhatsApp and most non-Google crawlers do not execute JavaScript.</p>
+  <p><strong>Impact.</strong> For a Bangladeshi storefront, WhatsApp and Facebook sharing is a primary distribution channel, and every shared link currently renders as a bare URL. It also affects this project directly: <em>a demo link pasted to a recruiter previews as nothing.</em></p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Add static <code>description</code>, <code>og:title</code>, <code>og:description</code>, <code>og:image</code> (absolute URL, 1200×630), <code>og:type</code>, <code>og:url</code> and <code>twitter:card</code> to <code>index.html</code>. Keep <code>seo.js</code> for per-page overrides — the static tags are the floor, not a replacement. <strong>Document the limitation honestly:</strong> per-product previews still need SSR or prerendering, which is out of scope. A reviewer respects a stated limitation more than an overclaim.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F16 · Two competing validation idioms</h3></div>
+  <p class="loc">9 forms use Zod + React Hook Form; 8+ hand-roll <code>useState</code></p>
+  <p>Hand-rolled forms include <code>AddressesPage</code> (a full Bangladesh address form with <em>no</em> field validation), <code>ProfilePage</code>, <code>ChangePasswordPage</code>, <code>ForgotPasswordPage</code>, <code>AdminTaxonomyPage</code> and <code>ImageManager</code> (file upload with no client-side type or size check).</p>
+  <p><strong>A second UI lie, in the same file as F1:</strong> <code>ChangePasswordPage</code> tells the user the password must mix "letters and numbers" and enforces only <code>minLength={8}</code>.</p>
+  <div class="fix">
+    <b>Fix — reuse, do not rewrite</b>
+    <p style="margin:0"><code>features/checkout/schemas.js</code> already contains a validated Bangladesh address and phone schema. <code>AddressesPage</code> should import it. That is the refactor's headline: <em>one</em> address schema serving both checkout and account. <strong>Requires F5 (Vitest) first</strong> — write the schema tests, then refactor against them. Preserve <code>ForgotPasswordPage</code>'s deliberate error handling (see §5.2).</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F17 · A failed fetch is indistinguishable from an empty result</h3></div>
+  <p class="loc">frontend/src/features/account/AccountOverviewPage.jsx, AddressesPage.jsx, builder/SharedBuildPage.jsx</p>
+  <p>These destructure query data with a default (<code>const { data: addresses = [] }</code>) and never branch on <code>isError</code>. A 500 therefore renders the "No addresses saved yet" empty state — actively misleading.</p>
+  <div class="fix">
+    <b>Fix — the default is not the bug</b>
+    <p style="margin:0">Keep <code>= []</code>; it correctly prevents <code>.map</code> crashes. The defect is the <strong>missing <code>isError</code> branch</strong>. <code>AdminTaxonomyPage.jsx:59</code> already does this correctly and is the in-repo template: destructure <code>isError</code>, <code>error</code> and <code>refetch</code>, render an error state with retry, and fall through to the empty state only on a successful zero-row response. Do the two account pages first — they sit on the checkout-adjacent path.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F18 · Sitemap is an uncapped, uncached full-table scan</h3></div>
+  <p class="loc">backend/apps/catalog/seo_views.py:96–140</p>
+  <p>The view iterates every listable product and builds the whole XML document in memory, with no 50,000-URL cap (the sitemaps.org limit, beyond which crawlers reject the document) and no server-side caching. The <code>Cache-Control</code> header it sets is a <em>client</em> directive that does nothing for the database.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Wrap in <code>@cache_page(3600)</code> — available once F3 lands, and a visible payoff from that work — and cap the product queryset at 50,000. <strong>Do not add a throttle:</strong> a cached response is cheap, and throttling this URL would rate-limit Googlebot, which is actively harmful.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F19 · The ignore rule will silently eat any env example</h3></div>
+  <p class="loc">frontend/.gitignore:34 — <code>.env*</code> with no negation</p>
+  <p>The root <code>.gitignore</code> correctly negates <code>!.env.example</code>; the frontend one does not. A committed <code>frontend/.env.example</code> would be silently ignored. Three <code>VITE_*</code> variables are undocumented and discoverable only by grep: <code>VITE_API_BASE_URL</code>, <code>VITE_BACKEND_ORIGIN</code>, <code>VITE_SHOW_DEMO_CREDENTIALS</code>.</p>
+  <div class="fix">
+    <b>Fix — order matters</b>
+    <p style="margin:0">Add <code>!.env.example</code> to <code>frontend/.gitignore</code> <strong>before</strong> writing the file, or the commit will appear to succeed and contain nothing. Then add <code>frontend/.env.example</code> documenting all three variables, with an explicit warning on the demo-credentials flag. Verify with <code>git check-ignore -v frontend/.env.example</code>.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F20 · The documented architecture exists nowhere</h3></div>
+  <p class="loc">CLAUDE.md:109–118 vs. the repository contents</p>
+  <p>Project documentation describes an Nginx (TLS, static, reverse proxy) → Gunicorn → MySQL topology. A repository-wide search for <code>Dockerfile</code>, <code>docker-compose</code>, <code>nginx.conf</code>, <code>gunicorn.conf</code>, <code>Procfile</code> and IaC returns <strong>exactly one artifact</strong>: <code>frontend/vercel.json</code>, which describes a static-host deployment — a different topology altogether.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Build the missing artifacts (see §7 item 2), then either remove <code>vercel.json</code> or document it explicitly as the alternate static-host path. Keeping both without explanation is the confusing state. Add a CI job that runs <code>docker compose up -d</code>, curls <code>/readyz/</code>, and tears down — an unexercised Compose file rots within a month and is worse than none.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F21 · Documentation contradicts the code it describes</h3></div>
+  <p class="loc">docs/HANDOFF.md §1 · config/api_urls.py:26 · apps/promotions/admin_urls.py:14 · config/settings/dev.py:23–42</p>
+  <p>Four separate false statements, all confidently phrased:</p>
+  <ul>
+    <li><code>HANDOFF.md</code> §1 lists payments, promotions, reviews and dashboard as having "no endpoints and no business logic". Payments has 3 routes and a 681-line service; reviews has 4; dashboard has 7.</li>
+    <li>Two comments describe <code>dashboard/urls.py</code> as "still an empty stub". It has 7 routes.</li>
+    <li><code>dev.py</code> asserts that refresh "shares the <code>auth</code> scope with login", which is the stated justification for relaxing that rate to 2000/min. Refresh has no scope at all.</li>
+  </ul>
+  <p><strong>Impact.</strong> This codebase's character is load-bearing comments that explain <em>why</em>. That is a real strength — but a reviewer who catches one confidently false comment discounts all of them.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Correct all four. For the two "empty stub" comments, keep the reasoning (endpoints live in the app owning the model) and drop only the false premise. Rewrite the <code>dev.py</code> block after F6 gives refresh a real scope.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F22 · The README lists shipped features as "future improvements"</h3></div>
+  <p class="loc">README.md:591–606</p>
+  <p>The section lists wishlist functionality, product reviews and ratings, advanced filtering and search, and a CI/CD pipeline as potential future work. <strong>All four are built, routed and tested</strong> — wishlist and reviews are confirmed at <code>apps/reviews/urls.py:22</code> with 80 tests, and CI has been running since the workflow was added.</p>
+  <p><strong>Impact.</strong> For a portfolio project this is pure self-inflicted damage: it tells the exact audience you are trying to impress that substantial completed work does not exist.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Replace the section with an honest roadmap drawn from §6 and §7 of this document, and move the delivered items into a features list.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fhead"><span class="p p2">P2</span><h3>F23 · An empty URL module is still mounted</h3></div>
+  <p class="loc">backend/apps/promotions/urls.py — <code>urlpatterns = []</code>, included at config/api_urls.py:16</p>
+  <p>Harmless at runtime, but it is a live import of a file with no content.</p>
+  <div class="fix">
+    <b>Fix</b>
+    <p style="margin:0">Rather than deleting it, <strong>fill it</strong> — this is the natural home for the <code>POST /coupons/validate/</code> endpoint that resolves the F8 enumeration oracle. It is already mounted, so no wiring change is needed.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+<h2><span class="num">5</span>Assessed — No Action</h2>
+<p class="lede">Five items that look like defects, were examined, and are being left alone. Recording them matters: an audit that cannot distinguish deliberate design from oversight is not worth acting on.</p>
+
+<h3>5.1 The demo-credentials flag is a feature, not a leak</h3>
+<p><code>VITE_SHOW_DEMO_CREDENTIALS</code> renders working demo logins on the login page. It is off by default and requires an exact <code>'true'</code> opt-in at build time. A 28-line comment records that it was <em>deliberately</em> loosened from <code>import.meta.env.DEV</code> — because that stricter gate makes a public demo impossible to build — and spells out exactly what the admin row grants.</p>
+<p><strong>Verdict: no change.</strong> The dangerous state is the one you must ask for. Document the flag in <code>frontend/.env.example</code> (F19) with a warning and move on. Listing this as a defect would flag one of the codebase's best-documented decisions as a mistake.</p>
+
+<h3>5.2 The swallowed error in the password-reset flow is correct</h3>
+<p><code>ForgotPasswordPage</code> catches and discards errors from the reset request, then always shows the neutral "if an account exists" screen. This is not sloppiness: distinguishing failure modes is precisely the user-enumeration leak the flow exists to prevent, and it matches the backend, which deliberately returns <code>None</code> for unknown addresses and always responds 204.</p>
+<p><strong>Verdict: at most a narrow refinement.</strong> One could report <em>transport</em> failure — the request never reached the server, which reveals nothing about the email — while keeping every HTTP response neutral. That is a subtler change than "stop swallowing errors", and the current behaviour is defensible as-is.</p>
+
+<h3>5.3 Upload limits are not unset in the dangerous sense</h3>
+<p>Django defaults <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> and <code>FILE_UPLOAD_MAX_MEMORY_SIZE</code> to 2.5 MB. "Not configured" here means "not narrowed from a safe default", not "unbounded". The application already enforces a 5 MB image cap in its admin service, and those endpoints are admin-gated.</p>
+<p><strong>Verdict: minor tightening only.</strong> The genuinely useful addition is <code>DATA_UPLOAD_MAX_NUMBER_FIELDS</code>, which bounds hash-collision-style POST floods. Ranking this beside a real hole would dilute the credibility of the register.</p>
+
+<h3>5.4 Coupon error codes must stay distinguishable</h3>
+<p>Covered under F8. Flattening <code>COUPON_EXPIRED</code> and <code>COUPON_MIN_ORDER_NOT_MET</code> into a generic failure would degrade a working error contract that the storefront branches on. Rate limiting is the right control.</p>
+
+<h3>5.5 The default-destructure idiom is good practice</h3>
+<p>Covered under F17. <code>const { data = [] }</code> prevents crashes and should stay; the missing <code>isError</code> branch is the defect. Framing it as "remove the default" would produce a worse codebase.</p>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+<h2><span class="num">6</span>Remediation Roadmap</h2>
+<p class="lede">Five phases, ordered so that no fix is illusory and no refactor lands without a safety net.</p>
+
+<div class="warn">
+  <b>Two hard sequencing gates</b>
+  <strong>1.</strong> The cache (F3) ships in the same change as throttling (F2), or the control is per-worker and falsely certified by tests. &nbsp; <strong>2.</strong> The frontend coverage baseline (F5) lands before the form-validation refactor (F16), which touches eight currently untested pages.
+</div>
+
+<h3>Phase 0 — Truth and safety nets <span class="eff">0.5 day</span></h3>
+<p>Nothing architectural. Every item is either a false statement in the repository or a one-line net. Highest confidence, lowest risk — a good first commit.</p>
+<table class="tight long">
+  <thead><tr><th style="width:14mm">ID</th><th style="width:56mm">Action</th><th style="width:14mm">Effort</th><th>Verification</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F1</td><td>Correct the password-change security copy; mark HANDOFF §4 resolved</td><td><span class="eff">S</span></td><td>Grep for the old wording returns nothing; e2e asserts the new copy</td></tr>
+    <tr><td class="c-id">F19</td><td>Fix the ignore negation, then add <code>frontend/.env.example</code></td><td><span class="eff">S</span></td><td><code>git check-ignore -v</code> exits non-zero; fresh clone runs unmodified</td></tr>
+    <tr><td class="c-id">F21</td><td>Correct four false comments/doc claims</td><td><span class="eff">S</span></td><td>Each claim re-checked against the code it describes</td></tr>
+    <tr><td class="c-id">F22</td><td>Rewrite README "Future Improvements"</td><td><span class="eff">S</span></td><td>No shipped feature listed as future</td></tr>
+    <tr><td class="c-id">F10</td><td>Add the 500-path logger to the exception handler</td><td><span class="eff">S</span></td><td>Test asserts an ERROR record with traceback via <code>caplog</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 1 — The real security fixes <span class="eff">1–2 days</span></h3>
+<p>F2, F3 and the dev-environment throttle relaxation ship as <strong>one</strong> change.</p>
+<table class="tight long">
+  <thead><tr><th style="width:14mm">ID</th><th style="width:56mm">Action</th><th style="width:14mm">Effort</th><th>Verification</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F3</td><td>Configure <code>CACHES</code>; fail fast on LocMem in production</td><td><span class="eff">M</span></td><td>Runtime check shows a shared backend</td></tr>
+    <tr><td class="c-id">F2</td><td>Add <code>DEFAULT_THROTTLE_CLASSES</code>; relax <code>anon</code>/<code>user</code> in dev</td><td><span class="eff">S</span></td><td><strong>New test: 121 product-list calls → 429.</strong> Fails today, passes after</td></tr>
+    <tr><td class="c-id">F6</td><td>Give refresh its own <code>60/min</code> scope</td><td><span class="eff">S</span></td><td>61st refresh is 429 while login in the same window succeeds</td></tr>
+    <tr><td class="c-id">F7</td><td>Apply the <code>auth</code> scope to email verification</td><td><span class="eff">S</span></td><td>11th verification attempt is 429</td></tr>
+    <tr><td class="c-id">F8 / F23</td><td>Scope quote and placement; add <code>POST /coupons/validate/</code></td><td><span class="eff">M</span></td><td>31st quote is 429; new endpoint returns identical codes (shared service)</td></tr>
+    <tr><td class="c-id">F11</td><td>Set <code>EMAIL_TIMEOUT</code></td><td><span class="eff">S</span></td><td>Send against a black-holed host returns within the timeout</td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 2 — Prove it: testing and observability <span class="eff">3–5 days</span></h3>
+<p>The phase that does most for a portfolio, because it produces numbers and badges.</p>
+<table class="tight long">
+  <thead><tr><th style="width:14mm">ID</th><th style="width:56mm">Action</th><th style="width:14mm">Effort</th><th>Verification</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F5</td><td>Vitest + Testing Library; test money, schemas, stores</td><td><span class="eff">M</span></td><td><code>npm run test:cov</code> produces a number; record it</td></tr>
+    <tr><td class="c-id">F4</td><td>ErrorBoundary + per-route <code>errorElement</code></td><td><span class="eff">S</span></td><td>Component test on a throwing child; e2e on a broken route</td></tr>
+    <tr><td class="c-id">F13</td><td>Backend coverage, ruff, dependency audits, <code>--max-warnings=0</code></td><td><span class="eff">M</span></td><td>CI reports coverage; gate set just below baseline</td></tr>
+    <tr><td class="c-id">F12</td><td>Wire Playwright into CI</td><td><span class="eff">M</span></td><td>e2e + a11y green on a pull request; report uploaded on failure</td></tr>
+    <tr><td class="c-id">F9</td><td>Health/readiness endpoints; request IDs; Sentry</td><td><span class="eff">M</span></td><td><code>/readyz/</code> returns 503 with MySQL stopped</td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 3 — Visible polish <span class="eff">3–5 days</span></h3>
+<table class="tight long">
+  <thead><tr><th style="width:14mm">ID</th><th style="width:56mm">Action</th><th style="width:14mm">Effort</th><th>Verification</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F14</td><td>OpenAPI schema + Swagger UI at <code>/api/docs/</code></td><td><span class="eff">M</span></td><td>"Try it out" places a real order; <code>--fail-on-warn</code> in CI</td></tr>
+    <tr><td class="c-id">F15</td><td>Static social meta tags</td><td><span class="eff">S</span></td><td>Tags present in built <code>dist/index.html</code> with no JS</td></tr>
+    <tr><td class="c-id">F16</td><td>Unify validation on Zod + RHF; reuse the address schema</td><td><span class="eff">L</span></td><td>Schema tests pass; one address schema serves both surfaces</td></tr>
+    <tr><td class="c-id">F17</td><td>Add <code>isError</code> branches</td><td><span class="eff">S</span></td><td>Simulated 500 renders an error state, not "empty"</td></tr>
+    <tr><td class="c-id">F18</td><td>Cache and cap the sitemap</td><td><span class="eff">S</span></td><td>Second request issues no product queries</td></tr>
+  </tbody>
+</table>
+
+<h3>Phase 4 — Deployment story <span class="eff">2–3 days</span></h3>
+<table class="tight long">
+  <thead><tr><th style="width:14mm">ID</th><th style="width:56mm">Action</th><th style="width:14mm">Effort</th><th>Verification</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">F20</td><td>Dockerfiles, gunicorn config, nginx config, Compose</td><td><span class="eff">M</span></td><td><code>docker compose up</code> → working store; CI exercises it</td></tr>
+    <tr><td class="c-id">—</td><td>Dependabot (grouped) + CodeQL</td><td><span class="eff">S</span></td><td>Weekly grouped PRs, limit 5</td></tr>
+    <tr><td class="c-id">—</td><td>Public demo deployment</td><td><span class="eff">M</span></td><td>Reachable, seeded, linked from README</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============ 7 ============ -->
+<section>
+<h2><span class="num">7</span>Industry-Standard Additions</h2>
+<p class="lede">What to add to make this read as professional work, ranked by visible impact per unit of effort.</p>
+
+<table class="long">
+  <thead><tr><th style="width:8mm">#</th><th style="width:48mm">Addition</th><th style="width:14mm">Effort</th><th>Why it lands</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>OpenAPI / Swagger UI</strong></td><td><span class="eff">M</span></td><td>Interactive and clickable. Converts already well-structured serializers into something a reviewer explores in the browser rather than reads about. The first link anyone opens.</td></tr>
+    <tr><td>2</td><td><strong>Docker Compose one-command setup</strong></td><td><span class="eff">M</span></td><td>The difference between a reviewer running the project in two minutes and not running it at all. Also resolves the F20 contradiction.</td></tr>
+    <tr><td>3</td><td><strong>Architecture Decision Records</strong></td><td><span class="eff">S–M</span></td><td>The sleeper. See below — mostly transcription, not authorship.</td></tr>
+    <tr><td>4</td><td><strong>Static OG tags</strong></td><td><span class="eff">S</span></td><td>About an hour. Makes the demo link itself presentable when shared.</td></tr>
+    <tr><td>5</td><td><strong>CI + coverage badges</strong></td><td><span class="eff">S</span></td><td>Free once Phase 2 lands. Top-of-README credibility.</td></tr>
+    <tr><td>6</td><td><strong>e2e + a11y running in CI</strong></td><td><span class="eff">M</span></td><td>An accessibility suite on every pull request is a stronger signal than most projects ever produce.</td></tr>
+    <tr><td>7</td><td><strong>Architecture diagram + screenshots</strong></td><td><span class="eff">S</span></td><td>The README has 30+ headings and zero images.</td></tr>
+    <tr><td>8</td><td><strong>Error boundary</strong></td><td><span class="eff">S</span></td><td>Answers the "what happens when it breaks" question reviewers actively probe.</td></tr>
+    <tr><td>9</td><td><strong>Public demo deployment</strong></td><td><span class="eff">M</span></td><td>Highest ceiling, most operational risk — see §8 on the cookie trap.</td></tr>
+  </tbody>
+</table>
+
+<h3>7.1 On ADRs — the highest-leverage documentation available</h3>
+<p>This codebase is unusually rich in genuine, well-argued architectural decisions that are currently buried in code comments, where no reviewer will ever find them. Each of the following is <em>already</em> reasoned out in the repository and needs only lifting into <code>docs/adr/</code>:</p>
+
+<table class="tight long">
+  <thead><tr><th style="width:16mm">ADR</th><th style="width:62mm">Decision</th><th>Where the reasoning already lives</th></tr></thead>
+  <tbody>
+    <tr><td class="c-id">001</td><td>Services layer owns all business rules</td><td>CLAUDE.md — the load-bearing rule</td></tr>
+    <tr><td class="c-id">002</td><td>404, not 403, for object-level authorisation</td><td><code>config/exceptions.py</code>, <code>apps/orders/views.py</code></td></tr>
+    <tr><td class="c-id">003</td><td>Money as <code>DECIMAL(12,2)</code>, never float</td><td><code>settings/base.py</code>, incl. the <code>STRICT_TRANS_TABLES</code> rationale</td></tr>
+    <tr><td class="c-id">004</td><td>Refresh token in an HttpOnly cookie; access token in memory</td><td><code>settings/base.py</code> — the SameSite reasoning is genuinely sophisticated</td></tr>
+    <tr><td class="c-id">005</td><td>Uniform login failure to prevent user enumeration</td><td><code>services/auth.py</code> — better than most textbook treatments</td></tr>
+    <tr><td class="c-id">006</td><td>Hand-rolled sitemap over <code>django.contrib.sitemaps</code></td><td><code>catalog/seo_views.py</code></td></tr>
+    <tr><td class="c-id">007</td><td>No background job queue in v1 <em>(amend for the cache — see §8)</em></td><td>CLAUDE.md</td></tr>
+    <tr><td class="c-id">008</td><td><code>SELECT FOR UPDATE</code> for oversell prevention and reference allocation</td><td><code>docs/HANDOFF.md</code> §4 — full concurrency write-up</td></tr>
+  </tbody>
+</table>
+
+<p>Eight ADRs, nearly all transcription. It is the cheapest available way to make the project's real depth <em>visible</em> rather than buried at line 62 of a settings file.</p>
+</section>
+
+<!-- ============ 8 ============ -->
+<section>
+<h2><span class="num">8</span>Risks &amp; Trade-offs</h2>
+<p class="lede">Where a fix can make things worse, and what to decide deliberately rather than by accident.</p>
+
+<h3>8.1 Enabling throttling will break the end-to-end suite</h3>
+<p>Playwright drives a real browser from one IP address, and catalogue-heavy specs will exhaust <code>anon: 120/min</code> in seconds. Relax <code>anon</code> and <code>user</code> in <code>dev.py</code> — following the precedent already set for <code>AUTH_THROTTLE_RATE</code> — <strong>in the same change as F2</strong>, and before wiring e2e into CI. Sequenced naively, Phase 1 and Phase 2 will appear to break each other.</p>
+
+<h3>8.2 A shared cache contradicts a documented decision</h3>
+<p>Project documentation states that no Redis is used in v1. That deferral was about <em>background job queues</em>, so adding a cache is defensible — but it must be <strong>stated, not silently reversed</strong>. A reviewer who reads the decision and then finds Redis in a Compose file will notice. Amend the line and write ADR-007 accordingly.</p>
+<p>Django's <code>DatabaseCache</code> remains a legitimate alternative that adds no new service, is genuinely adequate at this scale, and — honestly — would make for a more interesting ADR than the one defending Redis.</p>
+
+<h3>8.3 Caching facet counts can make the application wrong</h3>
+<p>Facet counts include <code>in_stock</code> figures that change with every order. Caching them can show "In stock (3)" when the true figure is zero. At 117 products the performance benefit is theoretical. If done at all, sequence it last, derive the cache key from the <em>parsed</em> query rather than the raw query string (so equivalent filter orderings share a key), and document the staleness explicitly. This is the one proposed change that can introduce user-visible inaccuracy.</p>
+
+<h3>8.4 A cross-origin demo will log users out in Safari</h3>
+<p>Hosting the SPA and the API on different registrable domains forces <code>SameSite=None</code> on the refresh cookie — which is a third-party cookie, blocked by default in Safari and Firefox. The demo would exhibit apparently random logouts, on the most visible artifact of the project. The production settings file already warns about this and names the fix: serve the SPA from a subdomain of the API's own domain.</p>
+
+<h3>8.5 Automation that nobody reads is worse than none</h3>
+<p>Dependabot on a solo project generates pull-request noise quickly. Use grouped updates and a low open-PR limit, or the resulting stale-PR graveyard will read worse than having no automation at all. The same applies to an unexercised Compose file (F20) and an aspirational coverage gate (F13).</p>
+</section>
+
+<!-- ============ 9 ============ -->
+<section>
+<h2><span class="num">9</span>Appendix</h2>
+
+<h3>9.1 Verification commands</h3>
+<pre class="code"># Backend (from backend/, venv active)
+python manage.py check
+python manage.py makemigrations --check --dry-run
+python -m pytest -q                     # full suite (MySQL required)
+python -m pytest -q -m "not slow"       # skip real-thread concurrency tests
+
+# Frontend (from frontend/)
+npm run lint
+npm run build
+npx playwright test                     # requires a running backend + seed
+
+# Confirm the throttle fix actually took effect
+python -c "from rest_framework.settings import api_settings; \
+           print(api_settings.DEFAULT_THROTTLE_CLASSES)"</pre>
+
+<h3>9.2 Environment notes for the next developer</h3>
+<div class="kv">
+  <dt>MySQL port</dt><dd>Documentation specifies <strong>3307</strong>; the service on the review machine listens on <strong>3306</strong>. Reconcile <code>DATABASE_URL</code> before running the suite.</dd>
+  <dt>No <code>.env</code> in a clone</dt><dd><code>backend/.env</code> is correctly gitignored, so a fresh checkout has no settings. Copy <code>backend/.env.example</code> first — <code>DJANGO_SECRET_KEY</code> has no default and Django will not start without it.</dd>
+  <dt>SQLite is not an option</dt><dd>Migration <code>catalog/0003</code> issues <code>CREATE FULLTEXT INDEX</code>. The suite is MySQL-bound by design.</dd>
+  <dt>Test database</dt><dd>The <code>ecom</code> grant must cover <code>test_ecom.*</code> as well, or pytest cannot create its database.</dd>
+  <dt>Parallel runs</dt><dd>One shared test schema: concurrent pytest processes contend. Deadlocks and "unknown database" errors during a run are contention, not defects.</dd>
+</div>
+
+<h3>9.3 Severity definitions</h3>
+<table class="tight">
+  <thead><tr><th style="width:20mm">Level</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><span class="p p0">P0</span></td><td>A security control that does not work, or a defect that misleads users about their own safety. Fix before further feature work.</td></tr>
+    <tr><td><span class="p p1">P1</span></td><td>A real gap with operational or diagnostic consequence. Fix within the current cycle.</td></tr>
+    <tr><td><span class="p p2">P2</span></td><td>Quality, polish, documentation accuracy. Fix opportunistically; several are high-value for a portfolio.</td></tr>
+  </tbody>
+</table>
+
+<p class="end">MicroMart — Technical Audit &amp; Improvement PRD · Version 1.0 · 6 September 2026<br>
+23 findings open · 5 assessed with no action · backend suite not executed (§2.3)</p>
+</section>
+
+</body>
+</html>

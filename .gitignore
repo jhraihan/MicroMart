@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django
+*.log
+db.sqlite3
+/backend/media/
+/backend/staticfiles/
+
+# Scraped development catalogue -- third-party content, regenerate with
+# scripts/scrape_startech.py rather than committing it.
+/backend/scripts/data/
+
+# Environment — never commit secrets (PRD §10.5)
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+/frontend/dist/
+.vite/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local SQL with real credentials
+*.local.sql
+_private_notes/

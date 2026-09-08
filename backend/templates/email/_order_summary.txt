@@ -1,0 +1,22 @@
+Order reference : {{ order.reference }}
+Placed          : {{ order.placed_at|date:"j M Y, g:i a" }}
+Status          : {{ order.get_status_display }}
+Payment         : {{ order.get_payment_method_display }}
+
+Items
+-----
+{% for item in items %}{{ item.quantity }} x {{ item.product_name }}{% if item.variant_label and item.variant_label != "Default" %} - {{ item.variant_label }}{% endif %}
+    {{ item.sku }}   {{ currency_symbol }}{{ item.unit_price }} each   =  {{ currency_symbol }}{{ item.line_total }}
+{% endfor %}
+Subtotal        : {{ currency_symbol }}{{ order.subtotal }}
+{% if order.discount_total > 0 %}Discount{% if order.coupon %} ({{ order.coupon.code }}){% endif %}        : -{{ currency_symbol }}{{ order.discount_total }}
+{% endif %}Shipping        : {{ currency_symbol }}{{ order.shipping_total }}{% if order.zone %} ({{ order.zone.name }}){% endif %}
+{% if order.tax_total > 0 %}VAT ({{ order.tax_rate_applied }}%)   : {{ currency_symbol }}{{ order.tax_total }}{% if store.tax_inclusive_pricing %} (included in prices){% endif %}
+{% endif %}Total           : {{ currency_symbol }}{{ order.grand_total }}
+
+Delivering to
+-------------
+{{ order.ship_recipient_name }}
+{{ order.ship_street }}{% if order.ship_area %}, {{ order.ship_area }}{% endif %}
+{% if order.ship_upazila %}{{ order.ship_upazila }}, {% endif %}{{ order.ship_district }}, {{ order.ship_division }}{% if order.ship_postcode %} - {{ order.ship_postcode }}{% endif %}
+Phone: {{ order.ship_phone }}

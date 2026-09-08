@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PRD — Single-Vendor Electronics E-Commerce Web App</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+
+  :root {
+    --ink: #14181f;
+    --muted: #5a6472;
+    --line: #d7dce3;
+    --line-soft: #e9edf2;
+    --accent: #1f4fd8;
+    --accent-soft: #eef2fd;
+    --wash: #f6f8fb;
+    --warn: #8a5300;
+    --warn-soft: #fdf6e7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    font-family: -apple-system, "Helvetica Neue", "Segoe UI", Arial, "Kohinoor Bangla", sans-serif;
+    color: var(--ink);
+    font-size: 10.2pt;
+    line-height: 1.52;
+    margin: 0;
+  }
+
+  p { margin: 0 0 8pt; }
+  strong { font-weight: 640; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.9pt;
+    background: var(--wash);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+    padding: 0.5pt 3pt;
+  }
+
+  /* ---------- cover ---------- */
+  .cover { height: 245mm; display: flex; flex-direction: column; justify-content: center; break-after: page; }
+  .cover .eyebrow {
+    font-size: 9pt; letter-spacing: 2.4pt; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 10pt;
+  }
+  .cover h1 {
+    font-size: 30pt; line-height: 1.16; margin: 0 0 10pt;
+    font-weight: 700; letter-spacing: -0.6pt;
+  }
+  .cover .sub { font-size: 12.5pt; color: var(--muted); margin: 0 0 26pt; max-width: 130mm; }
+  .cover .rule { height: 3.5pt; width: 54mm; background: var(--accent); margin-bottom: 26pt; }
+  .cover .meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12pt 22pt; max-width: 140mm; }
+  .cover .meta div { border-top: 1px solid var(--line); padding-top: 6pt; }
+  .cover .meta dt { font-size: 8pt; letter-spacing: 1.1pt; text-transform: uppercase; color: var(--muted); margin-bottom: 2pt; }
+  .cover .meta dd { margin: 0; font-size: 10.5pt; font-weight: 600; }
+  .cover .stackline { margin-top: 30pt; font-size: 9.6pt; color: var(--muted); }
+  .cover .stackline b { color: var(--ink); font-weight: 640; }
+
+  /* ---------- headings ---------- */
+  h2 {
+    font-size: 15.5pt; margin: 0 0 3pt; padding-bottom: 5pt;
+    border-bottom: 2px solid var(--ink); font-weight: 700; letter-spacing: -0.25pt;
+    break-after: avoid; break-before: page;
+  }
+  h2 .num { color: var(--accent); margin-right: 7pt; }
+  h2 + .lede { color: var(--muted); font-size: 9.6pt; margin: 6pt 0 12pt; }
+
+  h3 {
+    font-size: 11.4pt; margin: 15pt 0 5pt; font-weight: 680;
+    break-after: avoid;
+  }
+  h4 { font-size: 10pt; margin: 11pt 0 4pt; font-weight: 660; color: var(--muted); break-after: avoid; }
+
+  section { break-inside: auto; }
+  .nobreak { break-inside: avoid; }
+
+  /* ---------- toc ---------- */
+  .toc { break-after: page; }
+  .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  .toc li {
+    display: flex; align-items: baseline; gap: 8pt;
+    padding: 5.5pt 0; border-bottom: 1px solid var(--line-soft); font-size: 10.4pt;
+  }
+  .toc li .n { color: var(--accent); font-weight: 700; min-width: 20pt; }
+  .toc li .t { font-weight: 600; }
+  .toc li .d { color: var(--muted); font-size: 9pt; margin-left: auto; text-align: right; max-width: 88mm; }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 8pt 0 12pt; font-size: 9.1pt; break-inside: avoid; }
+  thead th {
+    background: var(--ink); color: #fff; text-align: left; font-weight: 620;
+    padding: 5pt 7pt; font-size: 8.4pt; letter-spacing: 0.5pt; text-transform: uppercase;
+  }
+  tbody td { padding: 5pt 7pt; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: var(--wash); }
+  td code { font-size: 8.3pt; }
+  table.tight td, table.tight th { padding: 3.6pt 6pt; }
+  .c-id { white-space: nowrap; font-weight: 640; color: var(--accent); }
+
+  /* long tables are allowed to break, with header repeat */
+  table.long { break-inside: auto; }
+  table.long thead { display: table-header-group; }
+  table.long tr { break-inside: avoid; }
+
+  /* ---------- lists ---------- */
+  ul, ol.body { margin: 0 0 9pt; padding-left: 15pt; }
+  li { margin-bottom: 3.5pt; }
+  ul.ac { list-style: none; padding-left: 0; }
+  ul.ac li { position: relative; padding-left: 15pt; margin-bottom: 3pt; }
+  ul.ac li::before {
+    content: "\2713"; position: absolute; left: 0; top: -0.5pt;
+    color: var(--accent); font-weight: 700; font-size: 9.5pt;
+  }
+
+  /* ---------- callouts ---------- */
+  .note, .warn {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 8pt 11pt; margin: 10pt 0; font-size: 9.4pt; break-inside: avoid;
+  }
+  .warn { border-left-color: #c99a2e; background: var(--warn-soft); }
+  .note b, .warn b { display: block; margin-bottom: 2pt; font-size: 8.3pt; letter-spacing: 0.9pt; text-transform: uppercase; }
+  .note b { color: var(--accent); }
+  .warn b { color: var(--warn); }
+
+  /* ---------- badges ---------- */
+  .p { font-size: 7.6pt; font-weight: 700; padding: 1.4pt 5pt; border-radius: 9pt; letter-spacing: 0.5pt; white-space: nowrap; }
+  .p0 { background: #fde7e7; color: #a3262d; }
+  .p1 { background: #e7f0fd; color: #1c47b8; }
+  .p2 { background: #eceff3; color: #5a6472; }
+
+  .feat-head { display: flex; align-items: baseline; gap: 8pt; margin: 16pt 0 4pt; break-after: avoid; }
+  .feat-head h3 { margin: 0; }
+
+  /* ---------- diagram ---------- */
+  pre.dia {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 8.1pt; line-height: 1.42;
+    background: var(--wash); border: 1px solid var(--line);
+    padding: 10pt 12pt; margin: 9pt 0 12pt; break-inside: avoid;
+    white-space: pre; overflow: hidden;
+  }
+
+  .kv { display: grid; grid-template-columns: 34mm 1fr; gap: 3pt 10pt; font-size: 9.4pt; margin: 6pt 0 11pt; }
+  .kv dt { font-weight: 640; color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18pt; }
+
+  .end { margin-top: 16pt; padding-top: 8pt; border-top: 1px solid var(--line); font-size: 8.6pt; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="eyebrow">Product Requirements Document</div>
+  <h1>Single-Vendor Electronics<br>E-Commerce Web Application</h1>
+  <p class="sub">An online storefront and order-management system for a single electronics retailer operating in Bangladesh.</p>
+  <div class="rule"></div>
+  <dl class="meta">
+    <div><dt>Version</dt><dd>1.0 — Draft for Review</dd></div>
+    <div><dt>Date</dt><dd>18 August 2026</dd></div>
+    <div><dt>Market</dt><dd>Bangladesh · BDT (৳)</dd></div>
+    <div><dt>Team</dt><dd>1 full-stack developer</dd></div>
+    <div><dt>Target Timeline</dt><dd>6 weeks to MVP launch</dd></div>
+    <div><dt>Status</dt><dd>Pending stakeholder sign-off</dd></div>
+  </dl>
+  <p class="stackline">
+    <b>Stack:</b> Django + Django REST Framework &nbsp;·&nbsp; MySQL 8 &nbsp;·&nbsp; Vite + React &nbsp;·&nbsp; Tailwind CSS
+  </p>
+</div>
+
+<!-- ============ TOC ============ -->
+<div class="toc">
+  <h2 style="break-before:avoid"><span class="num">—</span>Contents</h2>
+  <ol>
+    <li><span class="n">1</span><span class="t">Document Control</span><span class="d">Revision history, approvals, terminology</span></li>
+    <li><span class="n">2</span><span class="t">Executive Summary</span><span class="d">What is being built and why</span></li>
+    <li><span class="n">3</span><span class="t">Goals &amp; Success Metrics</span><span class="d">Business goals, KPIs, non-goals</span></li>
+    <li><span class="n">4</span><span class="t">Personas &amp; User Stories</span><span class="d">Shopper, Store Admin, Support Staff</span></li>
+    <li><span class="n">5</span><span class="t">Feature Requirements</span><span class="d">13 feature areas with acceptance criteria</span></li>
+    <li><span class="n">6</span><span class="t">Data Model</span><span class="d">Entities, relationships, key constraints</span></li>
+    <li><span class="n">7</span><span class="t">API Surface</span><span class="d">REST endpoints, auth, conventions</span></li>
+    <li><span class="n">8</span><span class="t">Architecture &amp; Tech Stack</span><span class="d">Backend, frontend, deployment topology</span></li>
+    <li><span class="n">9</span><span class="t">Non-Functional Requirements</span><span class="d">Performance, responsiveness, accessibility</span></li>
+    <li><span class="n">10</span><span class="t">Security &amp; Compliance</span><span class="d">Auth, payment safety, data handling</span></li>
+    <li><span class="n">11</span><span class="t">Analytics &amp; Events</span><span class="d">Instrumentation plan and reporting</span></li>
+    <li><span class="n">12</span><span class="t">Milestones &amp; Delivery Risk</span><span class="d">6-week plan, what slips first</span></li>
+    <li><span class="n">13</span><span class="t">Out of Scope &amp; v2 Roadmap</span><span class="d">Explicitly deferred work</span></li>
+    <li><span class="n">14</span><span class="t">Open Questions</span><span class="d">Blockers needing a decision</span></li>
+    <li><span class="n">15</span><span class="t">Appendix</span><span class="d">State machine, env vars, glossary</span></li>
+  </ol>
+</div>
+
+<!-- ============ 1 ============ -->
+<section>
+  <h2 style="break-before:avoid"><span class="num">1</span>Document Control</h2>
+  <p class="lede">Ownership, revision trail, and the decisions already locked before drafting.</p>
+
+  <h3>1.1 Revision history</h3>
+  <table class="tight">
+    <thead><tr><th style="width:14%">Version</th><th style="width:18%">Date</th><th style="width:20%">Author</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>0.1</td><td>18 Aug 2026</td><td>Store Owner</td><td>Initial scoping — stack and feature intent captured</td></tr>
+      <tr><td>1.0</td><td>18 Aug 2026</td><td>Store Owner</td><td>Full draft: requirements, data model, API, milestones</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 Locked decisions</h3>
+  <p>The following were settled during scoping and are treated as fixed inputs to this document, not open questions.</p>
+  <table class="tight">
+    <thead><tr><th style="width:26%">Area</th><th>Decision</th></tr></thead>
+    <tbody>
+      <tr><td>Vendor model</td><td>Single vendor. One store, one owner, no marketplace/seller onboarding.</td></tr>
+      <tr><td>Market &amp; currency</td><td>Bangladesh. All prices in BDT (৳). Bengali language deferred to v2 — v1 ships English UI.</td></tr>
+      <tr><td>Payments</td><td>Cash on Delivery plus one online gateway: <b>SSLCommerz</b> (cards, bKash, Nagad, Rocket, netbanking).</td></tr>
+      <tr><td>Admin experience</td><td>Custom React admin dashboard, not Django's built-in admin site.</td></tr>
+      <tr><td>Backend</td><td>Django + Django REST Framework, MySQL 8.</td></tr>
+      <tr><td>Frontend</td><td>Vite + React single-page app, styled with Tailwind CSS.</td></tr>
+      <tr><td>Team &amp; timeline</td><td>One full-stack developer, 6-week target to launch. See §12 for risk treatment.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.3 Requirement notation</h3>
+  <p>Requirements are labelled <code>FR-&lt;area&gt;-&lt;n&gt;</code> and carry a priority:</p>
+  <table class="tight">
+    <thead><tr><th style="width:14%">Priority</th><th style="width:24%">Meaning</th><th>Effect on launch</th></tr></thead>
+    <tbody>
+      <tr><td><span class="p p0">P0</span></td><td>Must have</td><td>Launch blocks without it. The store cannot transact.</td></tr>
+      <tr><td><span class="p p1">P1</span></td><td>Should have</td><td>Ships in v1 if the schedule holds; first candidate to defer.</td></tr>
+      <tr><td><span class="p p2">P2</span></td><td>Nice to have</td><td>Build only if time remains. Assume it slips to v1.1.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <h2><span class="num">2</span>Executive Summary</h2>
+  <p class="lede">One paragraph on the problem, the product, and the definition of done.</p>
+
+  <p>The store currently sells electronics through walk-in traffic and phone or messaging orders. Every order costs staff time to take down manually, stock levels live in someone's head, and the catalogue is invisible to anyone not already standing in the shop. This project replaces that with a public web storefront where customers browse a searchable product catalogue, read specifications and reviews, add items to a cart, and check out with either Cash on Delivery or an online payment — and a private admin dashboard where the owner manages products, stock, coupons, and the order pipeline without developer involvement.</p>
+
+  <p>The system is deliberately <b>single-vendor</b>: there is no seller onboarding, no commission logic, no vendor payouts. That constraint is what makes a six-week build plausible for one developer. Scope is one storefront, one inventory, one owner.</p>
+
+  <p><b>Definition of done for v1:</b> a customer can find a product, order it, and pay for it; the owner can see that order, mark it shipped, and watch stock decrement — all through the web app, with no manual database edits and no developer in the loop.</p>
+
+  <h3>2.1 What v1 includes</h3>
+  <div class="two">
+    <ul>
+      <li>Product catalogue with categories, brands, and variants</li>
+      <li>Search, faceted filtering, and sorting</li>
+      <li>Cart with guest support and login merge</li>
+      <li>Checkout with Bangladesh address capture</li>
+      <li>COD and SSLCommerz online payment</li>
+      <li>Order history and status tracking</li>
+      <li>Customer accounts and address book</li>
+    </ul>
+    <ul>
+      <li>Reviews and ratings with verified-purchase badge</li>
+      <li>Wishlist</li>
+      <li>Coupon and discount engine</li>
+      <li>Inventory tracking with low-stock alerts</li>
+      <li>Shipping zones and configurable tax</li>
+      <li>Custom React admin dashboard</li>
+      <li>Transactional email notifications</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <h2><span class="num">3</span>Goals &amp; Success Metrics</h2>
+  <p class="lede">What the business is buying with this build, and how it will know the build worked.</p>
+
+  <h3>3.1 Business goals</h3>
+  <table class="tight">
+    <thead><tr><th style="width:34%">Goal</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td>Sell outside the shop's catchment area</td><td>Walk-in traffic caps revenue at physical footfall. A storefront plus courier delivery removes the geographic ceiling.</td></tr>
+      <tr><td>Cut manual order-taking overhead</td><td>Phone and messaging orders consume staff hours and produce transcription errors. Self-service checkout removes both.</td></tr>
+      <tr><td>Make stock levels truthful</td><td>Overselling an out-of-stock item damages trust and triggers refunds. A single inventory source of truth prevents it.</td></tr>
+      <tr><td>Build a repeat-customer channel</td><td>Accounts, order history, and email give the store a way to reach past buyers that a walk-in shop does not have.</td></tr>
+      <tr><td>Give the owner operational control</td><td>Price changes, new products, and promotions must not require a developer.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 Product goals</h3>
+  <ul>
+    <li>A returning customer who knows what they want can go from landing page to placed order in <b>under three minutes on a phone</b>.</li>
+    <li>A new customer can judge whether a product suits them from the product page alone — specs, images, warranty, and reviews all present without leaving the page.</li>
+    <li>The owner can fulfil a complete order — see it, confirm it, mark it packed and shipped — in <b>under 60 seconds</b> in the admin dashboard.</li>
+    <li>Adding a new product with images, specs, variants, and stock takes <b>under 5 minutes</b>.</li>
+  </ul>
+
+  <h3>3.3 Success metrics</h3>
+  <p>Baselines are unavailable pre-launch, so the first 60 days after go-live establish them. Targets below are the review thresholds for the 90-day check-in.</p>
+  <table class="tight">
+    <thead><tr><th style="width:30%">Metric</th><th style="width:22%">Target (90 days)</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Checkout conversion rate</td><td>≥ 1.5% of sessions</td><td>The headline health number for a new storefront.</td></tr>
+      <tr><td>Cart abandonment</td><td>≤ 70%</td><td>High abandonment points at checkout friction or surprise shipping cost.</td></tr>
+      <tr><td>Average order value</td><td>Establish baseline; track trend</td><td>Tells whether coupons and related-product placement are earning their keep.</td></tr>
+      <tr><td>COD refusal / failed-delivery rate</td><td>≤ 10% of COD orders</td><td>COD refusals are a direct loss — courier cost with no revenue. High rates justify order confirmation calls or a COD cap.</td></tr>
+      <tr><td>Share of orders paid online</td><td>≥ 25%</td><td>Prepaid orders carry no refusal risk. Moving customers off COD is a real margin lever.</td></tr>
+      <tr><td>Admin time per order</td><td>≤ 60 seconds</td><td>Directly measures whether the dashboard replaced manual work.</td></tr>
+      <tr><td>Oversell incidents</td><td>Zero</td><td>Any occurrence is an inventory-logic bug, not a business fluctuation.</td></tr>
+      <tr><td>Product-page bounce rate</td><td>≤ 55%</td><td>Proxy for whether product data is complete enough to decide on.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.4 Non-goals</h3>
+  <p>Named explicitly so scope creep has to argue against a written line:</p>
+  <ul>
+    <li>This is <b>not</b> a marketplace. No second seller, ever, in v1.</li>
+    <li>This is <b>not</b> a POS or accounting system. It does not replace in-shop billing or produce financial statements.</li>
+    <li>This is <b>not</b> a warehouse management system. Stock is a number per variant, not bin locations and pick paths.</li>
+    <li>No native mobile app. The web app is mobile-first and that is the mobile strategy for v1.</li>
+  </ul>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <h2><span class="num">4</span>Personas &amp; User Stories</h2>
+  <p class="lede">Who uses the system, what they are trying to accomplish, and how success is judged.</p>
+
+  <h3>4.1 Personas</h3>
+  <table class="tight">
+    <thead><tr><th style="width:20%">Persona</th><th style="width:26%">Profile</th><th>Primary needs</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Shopper</b><br><span style="color:var(--muted)">External, unauthenticated or logged in</span></td>
+        <td>Price-comparing electronics buyer, largely on an Android phone over mobile data. Cautious about paying online before seeing goods.</td>
+        <td>Trustworthy specs, real photos, honest stock status, clear delivery cost and time, and the option to pay cash on delivery.</td>
+      </tr>
+      <tr>
+        <td><b>Store Admin</b><br><span style="color:var(--muted)">Internal, owner/manager</span></td>
+        <td>Owner or manager. Comfortable with a browser, not with a terminal or a database client.</td>
+        <td>Add and price products fast, see today's orders at a glance, move orders through fulfilment, catch low stock before it sells out.</td>
+      </tr>
+      <tr>
+        <td><b>Support Staff</b><br><span style="color:var(--muted)">Internal, limited role</span></td>
+        <td>Shop staff who answer calls and messages about existing orders.</td>
+        <td>Look up an order by ID or phone number, read its status and history, update delivery status — without the ability to change prices or delete products.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Shopper stories</h3>
+  <table class="long">
+    <thead><tr><th style="width:9%">ID</th><th style="width:38%">Story</th><th>Acceptance criteria</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">US-S1</td><td>As a shopper, I want to browse products by category so I can narrow down to the type of device I need.</td><td>Category nav lists all active categories and subcategories; selecting one shows only its products, including those in child categories; empty categories show a clear empty state, not a blank page.</td></tr>
+      <tr><td class="c-id">US-S2</td><td>As a shopper, I want to search by product name or model number so I can find a specific item fast.</td><td>Search matches on product name, brand, model, and SKU; results are ranked with exact model matches first; a no-results state suggests browsing categories.</td></tr>
+      <tr><td class="c-id">US-S3</td><td>As a shopper, I want to filter by brand, price, and availability so I only see what I can actually buy in my budget.</td><td>Filters combine (AND across facets, OR within a facet); active filters are visible and individually removable; filter state survives a page refresh via URL query params.</td></tr>
+      <tr><td class="c-id">US-S4</td><td>As a shopper, I want to see full specifications, images, and warranty on a product page so I can decide without contacting the shop.</td><td>Product page shows image gallery, spec table, warranty term, price, stock status, and aggregate rating; variant selection updates price, images, stock, and SKU without a full page reload.</td></tr>
+      <tr><td class="c-id">US-S5</td><td>As a shopper, I want to add items to a cart before I sign in so I am not forced to register just to look.</td><td>Guest cart persists in browser storage across refreshes; on login the guest cart merges with any server-side cart, summing quantities and capping at available stock.</td></tr>
+      <tr><td class="c-id">US-S6</td><td>As a shopper, I want to see delivery cost and tax before I commit so the final amount is never a surprise.</td><td>Order summary shows subtotal, discount, shipping, tax, and grand total as separate lines, recalculated whenever the cart, shipping zone, or coupon changes.</td></tr>
+      <tr><td class="c-id">US-S7</td><td>As a shopper, I want to pay cash on delivery so I do not have to trust a new shop with my card.</td><td>COD is selectable when the order total is within the configured COD cap; the order is created in <code>pending</code> with payment method <code>cod</code>; a confirmation email is sent.</td></tr>
+      <tr><td class="c-id">US-S8</td><td>As a shopper, I want to pay online with bKash or a card so I can complete the purchase immediately.</td><td>Selecting online payment redirects to SSLCommerz; on success the order moves to <code>confirmed</code> and stock decrements; on failure or cancel the order remains <code>pending</code> with no stock change and the cart is preserved.</td></tr>
+      <tr><td class="c-id">US-S9</td><td>As a shopper, I want to track my order status so I know when to expect delivery.</td><td>Order detail shows a status timeline with timestamps; each transition triggers an email; the order is cancellable by the customer while status is <code>pending</code> or <code>confirmed</code>.</td></tr>
+      <tr><td class="c-id">US-S10</td><td>As a shopper, I want to read reviews from people who actually bought the product so I can trust them.</td><td>Reviews show star rating, text, author display name, and date; reviews from a delivered order carry a <b>Verified Purchase</b> badge; aggregate rating and review count appear on both product page and product card.</td></tr>
+      <tr><td class="c-id">US-S11</td><td>As a shopper, I want to save items to a wishlist so I can come back when I have the money.</td><td>Wishlist requires login; add/remove is one click from card or product page; the wishlist page shows current price and stock status and offers move-to-cart.</td></tr>
+      <tr><td class="c-id">US-S12</td><td>As a shopper, I want to apply a discount code so I get the advertised promotional price.</td><td>Code entry validates server-side against expiry, minimum order value, usage caps, and product scope; invalid codes return a specific reason, not a generic failure.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 Store Admin stories</h3>
+  <table class="long">
+    <thead><tr><th style="width:9%">ID</th><th style="width:38%">Story</th><th>Acceptance criteria</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">US-A1</td><td>As an admin, I want a dashboard of today's sales and orders so I can see how the store is doing at a glance.</td><td>Dashboard shows revenue and order count for today, last 7 days, and last 30 days; a trend chart; counts of orders awaiting action; a low-stock count.</td></tr>
+      <tr><td class="c-id">US-A2</td><td>As an admin, I want to add and edit products with images, specs, and variants so the catalogue stays current.</td><td>Product form supports name, description, category, brand, specs, warranty, images (multiple, reorderable), and variants with independent price, SKU, and stock; validation errors are shown per field.</td></tr>
+      <tr><td class="c-id">US-A3</td><td>As an admin, I want to see and advance orders through fulfilment so nothing sits unnoticed.</td><td>Order list is filterable by status, payment method, and date range, searchable by order ID, customer name, or phone; status changes are restricted to legal transitions (§15.1) and each is logged with actor and timestamp.</td></tr>
+      <tr><td class="c-id">US-A4</td><td>As an admin, I want to be warned when stock is low so I can reorder before selling out.</td><td>Each variant has a configurable low-stock threshold; the dashboard surfaces a low-stock list; a daily digest email is sent when any variant is at or below its threshold.</td></tr>
+      <tr><td class="c-id">US-A5</td><td>As an admin, I want to create coupon codes so I can run promotions without a developer.</td><td>Coupon form supports percentage or fixed amount, minimum order value, validity window, total and per-user usage caps, and product/category scope; a redemption count is visible per coupon.</td></tr>
+      <tr><td class="c-id">US-A6</td><td>As an admin, I want to moderate reviews so abusive or fake content does not appear on the store.</td><td>New reviews enter a <code>pending</code> queue; only <code>approved</code> reviews are publicly visible and counted in the aggregate rating; approve and reject are one click each.</td></tr>
+      <tr><td class="c-id">US-A7</td><td>As an admin, I want to set shipping rates per zone so delivery is charged correctly.</td><td>Zones are creatable with a name and rate; a free-shipping threshold is configurable; changes apply to new carts immediately and never retroactively alter placed orders.</td></tr>
+      <tr><td class="c-id">US-A8</td><td>As an admin, I want staff to have limited access so they cannot change prices by accident.</td><td>Roles are <code>admin</code> and <code>staff</code>; staff may view orders and update order status only; every other admin endpoint rejects staff with 403; the UI hides what the role cannot use.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 Support Staff stories</h3>
+  <table class="long">
+    <thead><tr><th style="width:9%">ID</th><th style="width:38%">Story</th><th>Acceptance criteria</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">US-T1</td><td>As support staff, I want to find an order by phone number so I can answer a caller immediately.</td><td>Order search accepts order ID, phone, or email and returns matching orders with status and items.</td></tr>
+      <tr><td class="c-id">US-T2</td><td>As support staff, I want to update delivery status so the customer's tracking stays accurate.</td><td>Staff can advance status along legal transitions; attempts to edit prices, products, or coupons are rejected server-side with 403.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <h2><span class="num">5</span>Feature Requirements</h2>
+  <p class="lede">Thirteen feature areas. Each carries numbered requirements, a priority, and acceptance criteria.</p>
+
+  <!-- 5.1 -->
+  <div class="feat-head"><h3>5.1 Product Catalogue</h3><span class="p p0">P0</span></div>
+  <p>The catalogue is the store's core asset. Electronics buyers decide on specifications, so product data density matters more than visual polish.</p>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-CAT-1</td><td>Categories support one level of nesting (e.g. <i>Computers → Laptops</i>). Each has a name, slug, optional image, and sort order.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-2</td><td>Products belong to exactly one category and one brand, and carry name, slug, rich-text description, warranty term, and an active/inactive flag.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-3</td><td>Products carry a structured specification set as key–value pairs (e.g. <i>Processor: Snapdragon 8 Gen 3</i>), rendered as a table and usable as filter input later.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-4</td><td>Products support variants (colour, storage, RAM). Each variant has its own SKU, price, compare-at price, stock count, and optional image. Products with no meaningful options carry a single default variant so pricing and stock logic never branches.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-5</td><td>Products support multiple images with a designated primary image and manual ordering. Images are served in a web-optimised format at listing and detail sizes.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-6</td><td>Product pages show up to eight related products from the same category, excluding out-of-stock items.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CAT-7</td><td>Inactive products return 404 on the storefront and are hidden from all listings, but remain intact in historical orders.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CAT-8</td><td>A <code>compare_at_price</code> greater than the selling price renders as a struck-through original with a calculated discount percentage.</td><td><span class="p p1">P1</span></td></tr>
+    </tbody>
+  </table>
+  <h4>Acceptance criteria</h4>
+  <ul class="ac">
+    <li>Selecting a variant updates price, stock badge, SKU, and gallery without a page reload.</li>
+    <li>A product with zero stock across all variants renders an "Out of stock" badge and a disabled add-to-cart button.</li>
+    <li>Category pages include products from child categories.</li>
+    <li>Deleting a category with products attached is blocked with a clear message rather than cascading.</li>
+  </ul>
+
+  <!-- 5.2 -->
+  <div class="feat-head"><h3>5.2 Search &amp; Discovery</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-SRC-1</td><td>Keyword search across product name, brand name, model, SKU, and short description, backed by a MySQL <code>FULLTEXT</code> index with a <code>LIKE</code> fallback for short queries.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SRC-2</td><td>Faceted filters: category, brand, price range, in-stock only, minimum rating. Facets reflect the current result set and show counts.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SRC-3</td><td>Sort options: relevance (search only), price ascending, price descending, newest, best rated, best selling.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SRC-4</td><td>Server-side pagination, 24 items per page, with total count returned so the UI can render page controls.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SRC-5</td><td>All search, filter, sort, and page state is encoded in URL query parameters so results are shareable and survive refresh and back-navigation.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SRC-6</td><td>Search-as-you-type suggestions after three characters, debounced at 250&nbsp;ms, capped at eight results.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+  <h4>Acceptance criteria</h4>
+  <ul class="ac">
+    <li>Searching an exact model number returns that product in the first position.</li>
+    <li>Applying two brands and a price range narrows correctly: brands OR'd together, then AND'd with price.</li>
+    <li>Copying the URL into a new tab reproduces the identical result set.</li>
+    <li>A zero-result search renders a suggestion state, never an empty grid.</li>
+  </ul>
+
+  <!-- 5.3 -->
+  <div class="feat-head"><h3>5.3 Shopping Cart</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-CRT-1</td><td>Guests get a cart persisted in <code>localStorage</code>; authenticated users get a server-side cart keyed to their account.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CRT-2</td><td>On login, the guest cart merges into the server cart: quantities sum, and any line exceeding available stock is clamped with a visible notice.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CRT-3</td><td>Cart lines reference a <b>variant</b>, not a product, and store quantity. Line quantity is editable and removable.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CRT-4</td><td>Cart totals are always computed server-side at checkout. Client-side totals are display-only and never trusted.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CRT-5</td><td>Stock and price are re-validated when the cart is opened and again at checkout. Changes since the item was added are surfaced before payment.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CRT-6</td><td>A mini-cart in the header shows item count and subtotal and is reachable from every page.</td><td><span class="p p1">P1</span></td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Design note</b>Adding to cart never reserves stock. Reservation happens only when an order is confirmed (§5.11). Reserving at cart-add would let abandoned carts starve real buyers, and expiring reservations is complexity a six-week build cannot absorb.</div>
+
+  <!-- 5.4 -->
+  <div class="feat-head"><h3>5.4 Checkout</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-CHK-1</td><td>Single-page checkout with sections for contact, shipping address, shipping method, payment method, and order review.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CHK-2</td><td>Address capture uses Bangladesh structure: recipient name, phone, division, district, upazila/thana, area, street address, optional postcode. Division and district are selects; the rest are free text.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CHK-3</td><td>Phone validation accepts Bangladesh mobile format (<code>01[3-9]XXXXXXXX</code>, with or without <code>+880</code>) and normalises before storage.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CHK-4</td><td>Logged-in users can pick a saved address or add a new one, optionally saving it to the address book.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CHK-5</td><td>Guest checkout is permitted. An order placed by a guest is later claimable by registering with the same email.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CHK-6</td><td>Coupon entry sits in the review section and recalculates all totals on apply and remove.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CHK-7</td><td>Order placement is idempotent: a client-generated idempotency key prevents duplicate orders from a double submit or a retried request.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-CHK-8</td><td>An optional order note field is captured and shown to the admin.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+  <h4>Acceptance criteria</h4>
+  <ul class="ac">
+    <li>Changing the district recalculates the shipping charge and the grand total.</li>
+    <li>Submitting the order form twice in quick succession creates exactly one order.</li>
+    <li>Missing required fields block submission with per-field messages, not one generic banner.</li>
+    <li>If any cart item went out of stock during checkout, placement is refused and the offending line is named.</li>
+  </ul>
+
+  <!-- 5.5 -->
+  <div class="feat-head"><h3>5.5 Payments</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-PAY-1</td><td>Cash on Delivery is available when the order total is at or below a configurable cap and the shipping zone permits COD.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-2</td><td>Online payment via <b>SSLCommerz hosted checkout</b>. The customer is redirected to SSLCommerz; card and wallet credentials never reach this application.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-3</td><td>Success, failure, and cancel callback URLs are implemented. The browser redirect updates the UI only — it is never the source of truth for payment state.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-4</td><td>An IPN webhook endpoint receives the gateway's server-to-server notification. Payment is confirmed only after the transaction is re-validated against the gateway's validation API and the amount is checked against the stored order total.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-5</td><td>Payment state transitions are idempotent. A repeated IPN for an already-confirmed order is acknowledged and ignored, never double-applied.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-6</td><td>A <code>Payment</code> record stores gateway transaction ID, method, amount, currency, status, and the raw gateway response for reconciliation.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-7</td><td>Failed or abandoned online payments leave the order in <code>pending</code> with stock untouched and the cart intact so the customer can retry.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-PAY-8</td><td>Refunds are recorded manually by an admin — status and reference only. Gateway-initiated refunds are out of scope for v1.</td><td><span class="p p1">P1</span></td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>Critical</b>An order must never be marked paid on the strength of a browser redirect alone. A redirect URL is user-controllable; treating it as proof of payment is a direct route to free merchandise. Confirmation requires the server-side validation call described in FR-PAY-4.</div>
+
+  <!-- 5.6 -->
+  <div class="feat-head"><h3>5.6 Orders &amp; Fulfilment</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-ORD-1</td><td>Each order gets a human-readable reference (e.g. <code>ORD-2026-000148</code>) shown to the customer, distinct from the database primary key.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-2</td><td>Order lines <b>snapshot</b> product name, variant label, SKU, and unit price at purchase time. Later catalogue edits never rewrite historical orders.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-3</td><td>Order status follows the state machine in §15.1: <code>pending → confirmed → packed → shipped → delivered</code>, with <code>cancelled</code> and <code>refunded</code> as terminal branches. Illegal transitions are rejected server-side.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-4</td><td>Customers can cancel while the order is <code>pending</code> or <code>confirmed</code>. Cancellation restores stock and records a reason.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-5</td><td>Every status change is written to an audit log with actor, previous status, new status, and timestamp.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-6</td><td>Transactional emails are sent on order placement, confirmation, shipment, delivery, and cancellation.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ORD-7</td><td>Shipment records hold courier name and tracking number, surfaced to the customer on the order page.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-ORD-8</td><td>Printable order invoice as a browser print view.</td><td><span class="p p1">P1</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.7 -->
+  <div class="feat-head"><h3>5.7 Authentication &amp; Accounts</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-AUT-1</td><td>Email and password registration and login. Email is the unique identifier; Django's default username field is replaced with a custom user model.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-AUT-2</td><td>JWT authentication via <code>djangorestframework-simplejwt</code>, with short-lived access tokens and rotating refresh tokens.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-AUT-3</td><td>Email verification on registration. Unverified accounts may browse and build a cart but not place an order.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-AUT-4</td><td>Password reset by emailed single-use, time-limited token.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-AUT-5</td><td>Profile management: display name, phone, and password change.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-AUT-6</td><td>Address book with multiple saved addresses and a default flag.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-AUT-7</td><td>Roles: <code>customer</code>, <code>staff</code>, <code>admin</code>. Admin routes are enforced by permission classes on the API, not by hiding UI.</td><td><span class="p p0">P0</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.8 -->
+  <div class="feat-head"><h3>5.8 Reviews &amp; Ratings</h3><span class="p p1">P1</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-REV-1</td><td>Authenticated customers submit a 1–5 star rating with optional title and body.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-2</td><td>Only customers with a <code>delivered</code> order containing the product may review it. This is enforced server-side, not merely hidden in the UI.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-3</td><td>One review per customer per product, editable by its author within 30 days.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-4</td><td>Reviews enter a <code>pending</code> moderation queue. Only <code>approved</code> reviews are publicly visible or counted in the aggregate.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-5</td><td>Aggregate rating and review count are denormalised onto the product and recomputed on approval, edit, or removal.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-6</td><td>Reviews display a <b>Verified Purchase</b> badge, since eligibility already guarantees it.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-REV-7</td><td>Review list is sortable by most recent and most helpful, and filterable by star rating.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.9 -->
+  <div class="feat-head"><h3>5.9 Wishlist</h3><span class="p p1">P1</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-WSH-1</td><td>Authenticated customers add and remove products from a wishlist in one click from a product card or product page.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-WSH-2</td><td>The wishlist page shows current price, current stock status, and a move-to-cart action per item.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-WSH-3</td><td>Out-of-stock wishlist items are labelled as such rather than hidden.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-WSH-4</td><td>An unauthenticated wishlist click prompts login and completes the add after successful authentication.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.10 -->
+  <div class="feat-head"><h3>5.10 Coupons &amp; Discounts</h3><span class="p p1">P1</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-CPN-1</td><td>Coupons are percentage-based or fixed-amount, with an optional maximum discount ceiling on percentage coupons.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-2</td><td>Constraints: minimum order value, valid-from and valid-until dates, total usage cap, per-user usage cap, and active flag.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-3</td><td>Scope: all products, a category list, or a product list. Discount applies only to eligible lines.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-4</td><td>Validation is server-side on every recalculation and again at order placement. Client-side checks are advisory only.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-5</td><td>Redemption is recorded per user per order, enforcing per-user caps and enabling promotion reporting.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-6</td><td>Only one coupon per order in v1. Stacking is out of scope.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-7</td><td>Rejections return a specific reason: expired, minimum not met, usage cap reached, not applicable to cart contents.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-CPN-8</td><td>Redemption is released if the order is cancelled before shipment, restoring the usage count.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.11 -->
+  <div class="feat-head"><h3>5.11 Inventory Management</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-INV-1</td><td>Stock is tracked per <b>variant</b> as a non-negative integer.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-2</td><td>Stock decrements when an order is <b>confirmed</b> — on COD placement, or on validated online payment. Never on add-to-cart.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-3</td><td>Stock is restored when an order is cancelled or refunded before shipment.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-4</td><td>Order confirmation runs inside a database transaction using <code>SELECT … FOR UPDATE</code> on the affected variant rows, so concurrent checkouts cannot oversell.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-5</td><td>Every stock movement writes an <code>InventoryLog</code> row: variant, delta, reason (<code>order</code>, <code>cancel</code>, <code>manual</code>, <code>restock</code>), actor, and timestamp.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-6</td><td>Each variant has a configurable low-stock threshold. Crossing it surfaces the variant in the admin low-stock list.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-INV-7</td><td>A daily digest email lists all variants at or below threshold.</td><td><span class="p p2">P2</span></td></tr>
+      <tr><td class="c-id">FR-INV-8</td><td>Admins adjust stock manually with a mandatory reason, which is logged.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-INV-9</td><td>Zero-stock variants are unselectable at checkout and clearly badged on the storefront.</td><td><span class="p p0">P0</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.12 -->
+  <div class="feat-head"><h3>5.12 Shipping &amp; Tax</h3><span class="p p0">P0</span></div>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-SHP-1</td><td>Shipping zones are admin-managed records. v1 seeds two — <i>Inside Dhaka</i> and <i>Outside Dhaka</i> — and the model supports adding more without a code change.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SHP-2</td><td>Each zone carries a flat rate, and optionally a per-kilogram rate applied above a base weight.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SHP-3</td><td>A configurable free-shipping threshold waives the charge above a given order subtotal.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-SHP-4</td><td>Zone is resolved from the district selected in the shipping address.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SHP-5</td><td>Each zone declares whether COD is permitted.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-SHP-6</td><td>Tax is a <b>configurable rate</b> settable globally and overridable per product, stored as a decimal percentage. It is applied at checkout and shown as its own total line.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SHP-7</td><td>The tax rate applied is snapshotted onto the order, so a later rate change never alters a historical order's arithmetic.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-SHP-8</td><td>Whether displayed prices are tax-inclusive or tax-exclusive is a single global setting, applied consistently across storefront, cart, and invoice.</td><td><span class="p p0">P0</span></td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>Open item — confirm before launch</b>The applicable VAT rate for online electronics retail in Bangladesh is <b>not</b> fixed by this document. The standard VAT rate is 15%, and reduced or sector-specific rates exist. Confirm the correct rate and the store's registration status with an accountant, then set it in configuration. The system is built rate-agnostic precisely so this decision can be made after the build.</div>
+
+  <!-- 5.13 -->
+  <div class="feat-head"><h3>5.13 Admin Dashboard (React)</h3><span class="p p0">P0</span></div>
+  <p>A route group inside the same React application, gated by role. Not Django Admin.</p>
+  <table class="long">
+    <thead><tr><th style="width:11%">ID</th><th>Requirement</th><th style="width:8%">Pri</th></tr></thead>
+    <tbody>
+      <tr><td class="c-id">FR-ADM-1</td><td>Overview: revenue and order counts for today, 7 days, and 30 days; a revenue trend chart; pending-order count; low-stock count; recent orders list.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-2</td><td>Order management: filterable and searchable list, detail view with items and customer data, and status advancement restricted to legal transitions.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-3</td><td>Product management: create, edit, activate/deactivate, multi-image upload with reordering, and inline variant editing.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-4</td><td>Category and brand management with create, rename, reorder, and deactivate.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-5</td><td>Inventory view: all variants with stock, filterable to low stock, supporting manual adjustment with a reason.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-6</td><td>Coupon management with create, edit, deactivate, and a redemption counter.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-ADM-7</td><td>Review moderation queue with approve and reject.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-ADM-8</td><td>Customer list with order count, lifetime value, and last-order date.</td><td><span class="p p1">P1</span></td></tr>
+      <tr><td class="c-id">FR-ADM-9</td><td>Settings: shipping zones and rates, tax rate, COD cap, free-shipping threshold, store contact details.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-10</td><td>Role gating: <code>staff</code> sees orders only; every non-order admin endpoint returns 403 for staff.</td><td><span class="p p0">P0</span></td></tr>
+      <tr><td class="c-id">FR-ADM-11</td><td>CSV export of orders for a selected date range.</td><td><span class="p p2">P2</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <h2><span class="num">6</span>Data Model</h2>
+  <p class="lede">Entities, their key fields, and the constraints that keep order history honest.</p>
+
+  <h3>6.1 Entity relationships</h3>
+<pre class="dia">
+User ──1:N── Address
+User ──1:1── Cart ──1:N── CartItem ──N:1── ProductVariant
+User ──1:N── Order ──1:N── OrderItem ──N:1── ProductVariant (nullable, SET NULL)
+                  │
+                  ├──1:1── Payment
+                  ├──1:1── Shipment
+                  ├──N:1── ShippingZone
+                  ├──N:1── Coupon (nullable)
+                  └──1:N── OrderStatusLog
+
+Category ──1:N── Category (self, one level)
+Category ──1:N── Product ──N:1── Brand
+Product  ──1:N── ProductVariant ──1:N── InventoryLog
+Product  ──1:N── ProductImage
+Product  ──1:N── ProductSpec
+Product  ──1:N── Review ──N:1── User
+Product  ──1:N── WishlistItem ──N:1── User
+
+Coupon ──1:N── CouponRedemption ──N:1── User
+</pre>
+
+  <h3>6.2 Core entities</h3>
+  <table class="long">
+    <thead><tr><th style="width:20%">Entity</th><th style="width:44%">Key fields</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>User</code></td><td>id, email (unique), password_hash, full_name, phone, role, is_email_verified, created_at</td><td>Custom user model with email as <code>USERNAME_FIELD</code>. Set this up in the very first migration — swapping it later is painful.</td></tr>
+      <tr><td><code>Address</code></td><td>id, user_fk, recipient_name, phone, division, district, upazila, area, street, postcode, is_default</td><td>Bangladesh address shape. Also copied verbatim onto the order.</td></tr>
+      <tr><td><code>Category</code></td><td>id, name, slug (unique), parent_fk, image, sort_order, is_active</td><td>Self-referencing, one level of nesting enforced in validation.</td></tr>
+      <tr><td><code>Brand</code></td><td>id, name, slug (unique), logo, is_active</td><td>Drives the brand facet.</td></tr>
+      <tr><td><code>Product</code></td><td>id, category_fk, brand_fk, name, slug (unique), description, warranty_months, is_active, rating_avg, rating_count, created_at</td><td><code>rating_avg</code> and <code>rating_count</code> are denormalised for list performance; recomputed on review approval.</td></tr>
+      <tr><td><code>ProductVariant</code></td><td>id, product_fk, sku (unique), option_label, price, compare_at_price, stock, low_stock_threshold, weight_grams, is_active</td><td>Every product has at least one. Price and stock live here, never on <code>Product</code>.</td></tr>
+      <tr><td><code>ProductImage</code></td><td>id, product_fk, variant_fk (nullable), image, alt_text, sort_order, is_primary</td><td>Variant-specific images fall back to product images.</td></tr>
+      <tr><td><code>ProductSpec</code></td><td>id, product_fk, key, value, sort_order</td><td>Renders the specification table.</td></tr>
+      <tr><td><code>Cart</code> / <code>CartItem</code></td><td>cart: id, user_fk, updated_at · item: id, cart_fk, variant_fk, quantity</td><td>Server-side cart for authenticated users only. Guests use <code>localStorage</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 Order entities</h3>
+  <table class="long">
+    <thead><tr><th style="width:20%">Entity</th><th style="width:44%">Key fields</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>Order</code></td><td>id, reference (unique), user_fk (nullable for guests), email, phone, shipping address fields (copied), zone_fk, coupon_fk, subtotal, discount_total, shipping_total, tax_total, tax_rate_applied, grand_total, payment_method, status, note, idempotency_key (unique), placed_at</td><td>Address is <b>copied</b>, not referenced — editing a saved address must never rewrite a past order.</td></tr>
+      <tr><td><code>OrderItem</code></td><td>id, order_fk, variant_fk (nullable, ON DELETE SET NULL), product_name, variant_label, sku, unit_price, quantity, line_total</td><td>Full snapshot. The FK exists only for analytics; the order reads correctly even if the variant is deleted.</td></tr>
+      <tr><td><code>Payment</code></td><td>id, order_fk, method, gateway_txn_id, amount, currency, status, raw_response (JSON), created_at, confirmed_at</td><td><code>raw_response</code> is retained for gateway reconciliation and dispute handling.</td></tr>
+      <tr><td><code>Shipment</code></td><td>id, order_fk, courier_name, tracking_number, shipped_at, delivered_at</td><td>One shipment per order in v1; no split shipments.</td></tr>
+      <tr><td><code>OrderStatusLog</code></td><td>id, order_fk, from_status, to_status, actor_fk, note, created_at</td><td>Append-only audit trail. Never updated or deleted.</td></tr>
+      <tr><td><code>ShippingZone</code></td><td>id, name, flat_rate, per_kg_rate, base_weight_grams, cod_allowed, districts (JSON), is_active</td><td>District list maps an address to a zone.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.4 Engagement entities</h3>
+  <table class="long">
+    <thead><tr><th style="width:20%">Entity</th><th style="width:44%">Key fields</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>Review</code></td><td>id, product_fk, user_fk, order_fk, rating, title, body, status, created_at, updated_at</td><td>Unique on (product, user). <code>order_fk</code> proves the purchase.</td></tr>
+      <tr><td><code>WishlistItem</code></td><td>id, user_fk, product_fk, created_at</td><td>Unique on (user, product).</td></tr>
+      <tr><td><code>Coupon</code></td><td>id, code (unique), discount_type, value, max_discount, min_order_value, valid_from, valid_until, usage_limit, per_user_limit, scope_type, scope_ids (JSON), is_active</td><td>Codes are compared case-insensitively.</td></tr>
+      <tr><td><code>CouponRedemption</code></td><td>id, coupon_fk, user_fk (nullable), order_fk, discount_amount, created_at</td><td>Enforces per-user caps and powers promotion reporting.</td></tr>
+      <tr><td><code>InventoryLog</code></td><td>id, variant_fk, delta, reason, actor_fk, order_fk (nullable), note, created_at</td><td>Append-only. Summing deltas must reconcile to current stock — a cheap integrity check.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.5 Indexes and constraints</h3>
+  <ul>
+    <li><code>FULLTEXT</code> index on <code>Product(name, description)</code> and <code>ProductVariant(sku)</code> for keyword search.</li>
+    <li>B-tree indexes on <code>Product(category_id, is_active)</code>, <code>ProductVariant(product_id)</code>, <code>Order(user_id, placed_at)</code>, <code>Order(status)</code>, <code>OrderItem(order_id)</code>.</li>
+    <li>Unique constraints: <code>User.email</code>, <code>Product.slug</code>, <code>ProductVariant.sku</code>, <code>Order.reference</code>, <code>Order.idempotency_key</code>, <code>Coupon.code</code>, <code>Review(product, user)</code>, <code>WishlistItem(user, product)</code>.</li>
+    <li><code>CHECK (stock &gt;= 0)</code> on <code>ProductVariant</code> — a database-level backstop under the application's oversell guard.</li>
+    <li>All money columns are <code>DECIMAL(12,2)</code>. No floats anywhere near a price.</li>
+    <li>InnoDB with <code>utf8mb4</code> throughout, so Bengali text and emoji in reviews and addresses store correctly.</li>
+  </ul>
+</section>
+
+<!-- ============ 7 ============ -->
+<section>
+  <h2><span class="num">7</span>API Surface</h2>
+  <p class="lede">REST over JSON. Conventions first, then the endpoint map.</p>
+
+  <h3>7.1 Conventions</h3>
+  <dl class="kv">
+    <dt>Base path</dt><dd><code>/api/v1/</code> — versioned from day one so a breaking change later does not need a rewrite.</dd>
+    <dt>Auth</dt><dd>JWT bearer tokens. Access token 15 minutes, refresh token 7 days with rotation and blacklist on logout.</dd>
+    <dt>Pagination</dt><dd>Page-number style: <code>?page=1&amp;page_size=24</code>. Responses carry <code>count</code>, <code>next</code>, <code>previous</code>, <code>results</code>.</dd>
+    <dt>Filtering</dt><dd>Query parameters via <code>django-filter</code>: <code>?category=laptops&amp;brand=asus&amp;min_price=40000&amp;in_stock=true</code>.</dd>
+    <dt>Errors</dt><dd>Consistent envelope: <code>{"error": {"code": "COUPON_EXPIRED", "message": "...", "field": "coupon_code"}}</code>. Codes are stable; messages are not.</dd>
+    <dt>Money</dt><dd>Serialised as decimal strings, never floats. Currency is always <code>BDT</code> in v1.</dd>
+  </dl>
+
+  <h3>7.2 Public and customer endpoints</h3>
+  <table class="long tight">
+    <thead><tr><th style="width:10%">Method</th><th style="width:38%">Path</th><th style="width:13%">Auth</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>POST</td><td><code>/auth/register/</code></td><td>Public</td><td>Create account, send verification email</td></tr>
+      <tr><td>POST</td><td><code>/auth/login/</code></td><td>Public</td><td>Issue access and refresh tokens</td></tr>
+      <tr><td>POST</td><td><code>/auth/refresh/</code></td><td>Public</td><td>Rotate refresh token</td></tr>
+      <tr><td>POST</td><td><code>/auth/logout/</code></td><td>Customer</td><td>Blacklist refresh token</td></tr>
+      <tr><td>POST</td><td><code>/auth/password-reset/</code></td><td>Public</td><td>Send reset token by email</td></tr>
+      <tr><td>POST</td><td><code>/auth/password-reset/confirm/</code></td><td>Public</td><td>Set new password from token</td></tr>
+      <tr><td>GET / PATCH</td><td><code>/auth/me/</code></td><td>Customer</td><td>Read and update profile</td></tr>
+      <tr><td>GET / POST</td><td><code>/addresses/</code></td><td>Customer</td><td>List and create saved addresses</td></tr>
+      <tr><td>PATCH / DELETE</td><td><code>/addresses/{id}/</code></td><td>Customer</td><td>Update or remove an address</td></tr>
+      <tr><td>GET</td><td><code>/categories/</code></td><td>Public</td><td>Category tree</td></tr>
+      <tr><td>GET</td><td><code>/brands/</code></td><td>Public</td><td>Brand list</td></tr>
+      <tr><td>GET</td><td><code>/products/</code></td><td>Public</td><td>Search, filter, sort, paginate</td></tr>
+      <tr><td>GET</td><td><code>/products/{slug}/</code></td><td>Public</td><td>Detail with variants, images, specs</td></tr>
+      <tr><td>GET</td><td><code>/products/{slug}/related/</code></td><td>Public</td><td>Related products</td></tr>
+      <tr><td>GET</td><td><code>/products/{slug}/reviews/</code></td><td>Public</td><td>Approved reviews, paginated</td></tr>
+      <tr><td>POST</td><td><code>/products/{slug}/reviews/</code></td><td>Customer</td><td>Submit review (purchase verified server-side)</td></tr>
+      <tr><td>GET</td><td><code>/cart/</code></td><td>Customer</td><td>Current server cart</td></tr>
+      <tr><td>POST</td><td><code>/cart/items/</code></td><td>Customer</td><td>Add a variant to cart</td></tr>
+      <tr><td>PATCH / DELETE</td><td><code>/cart/items/{id}/</code></td><td>Customer</td><td>Change quantity or remove</td></tr>
+      <tr><td>POST</td><td><code>/cart/merge/</code></td><td>Customer</td><td>Merge guest cart on login</td></tr>
+      <tr><td>POST</td><td><code>/checkout/quote/</code></td><td>Public</td><td>Server-computed totals for a cart, address, and coupon</td></tr>
+      <tr><td>POST</td><td><code>/checkout/coupon/validate/</code></td><td>Public</td><td>Validate a code against the cart</td></tr>
+      <tr><td>POST</td><td><code>/orders/</code></td><td>Public</td><td>Place order (idempotency key required)</td></tr>
+      <tr><td>GET</td><td><code>/orders/</code></td><td>Customer</td><td>Order history</td></tr>
+      <tr><td>GET</td><td><code>/orders/{reference}/</code></td><td>Customer</td><td>Order detail and status timeline</td></tr>
+      <tr><td>POST</td><td><code>/orders/{reference}/cancel/</code></td><td>Customer</td><td>Cancel while pre-shipment</td></tr>
+      <tr><td>POST</td><td><code>/payments/initiate/</code></td><td>Public</td><td>Create SSLCommerz session, return redirect URL</td></tr>
+      <tr><td>POST</td><td><code>/payments/ipn/</code></td><td>Gateway</td><td>Server-to-server notification; validated before trust</td></tr>
+      <tr><td>GET</td><td><code>/payments/callback/{result}/</code></td><td>Public</td><td>Browser return for success, fail, cancel — display only</td></tr>
+      <tr><td>GET / POST</td><td><code>/wishlist/</code></td><td>Customer</td><td>List and add wishlist items</td></tr>
+      <tr><td>DELETE</td><td><code>/wishlist/{product_id}/</code></td><td>Customer</td><td>Remove from wishlist</td></tr>
+      <tr><td>GET</td><td><code>/shipping/zones/</code></td><td>Public</td><td>Zones and rates for checkout display</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.3 Admin endpoints</h3>
+  <p>All under <code>/api/v1/admin/</code>, gated by an <code>IsAdminOrStaff</code> permission class with per-view role checks.</p>
+  <table class="long tight">
+    <thead><tr><th style="width:10%">Method</th><th style="width:38%">Path</th><th style="width:13%">Role</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td><code>/admin/dashboard/</code></td><td>Admin</td><td>Revenue, order counts, trend series, alerts</td></tr>
+      <tr><td>GET</td><td><code>/admin/orders/</code></td><td>Admin, Staff</td><td>Filter and search orders</td></tr>
+      <tr><td>GET</td><td><code>/admin/orders/{reference}/</code></td><td>Admin, Staff</td><td>Full order detail</td></tr>
+      <tr><td>POST</td><td><code>/admin/orders/{reference}/status/</code></td><td>Admin, Staff</td><td>Advance status (legal transitions only)</td></tr>
+      <tr><td>POST</td><td><code>/admin/orders/{reference}/shipment/</code></td><td>Admin, Staff</td><td>Attach courier and tracking number</td></tr>
+      <tr><td>GET / POST</td><td><code>/admin/products/</code></td><td>Admin</td><td>List and create products</td></tr>
+      <tr><td>PATCH / DELETE</td><td><code>/admin/products/{id}/</code></td><td>Admin</td><td>Update or deactivate</td></tr>
+      <tr><td>POST</td><td><code>/admin/products/{id}/images/</code></td><td>Admin</td><td>Upload and reorder images</td></tr>
+      <tr><td>CRUD</td><td><code>/admin/variants/</code></td><td>Admin</td><td>Manage variants, price, SKU</td></tr>
+      <tr><td>CRUD</td><td><code>/admin/categories/</code>, <code>/admin/brands/</code></td><td>Admin</td><td>Taxonomy management</td></tr>
+      <tr><td>GET</td><td><code>/admin/inventory/</code></td><td>Admin</td><td>Stock across variants, low-stock filter</td></tr>
+      <tr><td>POST</td><td><code>/admin/inventory/adjust/</code></td><td>Admin</td><td>Manual adjustment with mandatory reason</td></tr>
+      <tr><td>CRUD</td><td><code>/admin/coupons/</code></td><td>Admin</td><td>Coupon management and redemption counts</td></tr>
+      <tr><td>GET</td><td><code>/admin/reviews/?status=pending</code></td><td>Admin</td><td>Moderation queue</td></tr>
+      <tr><td>POST</td><td><code>/admin/reviews/{id}/moderate/</code></td><td>Admin</td><td>Approve or reject</td></tr>
+      <tr><td>GET</td><td><code>/admin/customers/</code></td><td>Admin</td><td>Customers with order count and lifetime value</td></tr>
+      <tr><td>GET / PATCH</td><td><code>/admin/settings/</code></td><td>Admin</td><td>Tax rate, COD cap, shipping thresholds, store details</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 8 ============ -->
+<section>
+  <h2><span class="num">8</span>Architecture &amp; Tech Stack</h2>
+  <p class="lede">How the pieces fit, and why the boundaries were drawn where they were.</p>
+
+  <h3>8.1 System topology</h3>
+<pre class="dia">
+   Browser (mobile-first)
+        │
+        │  HTTPS
+        ▼
+   ┌─────────────────────────┐
+   │  Nginx                  │  static assets, TLS, reverse proxy
+   └───────────┬─────────────┘
+               │
+      ┌────────┴────────┐
+      ▼                 ▼
+ React SPA build   Django + DRF (Gunicorn)
+ (Vite dist/)      │
+                   ├── MySQL 8        orders, catalogue, users
+                   ├── Media storage  product images
+                   └── SMTP           transactional email
+
+ SSLCommerz ──IPN (server-to-server)──► /api/v1/payments/ipn/
+ Customer   ──redirect──► SSLCommerz ──redirect──► /payments/callback/
+</pre>
+
+  <h3>8.2 Backend</h3>
+  <table class="tight">
+    <thead><tr><th style="width:30%">Concern</th><th>Choice and rationale</th></tr></thead>
+    <tbody>
+      <tr><td>Framework</td><td>Django 5.x with Django REST Framework. The ORM, migrations, and auth scaffolding remove weeks of work from a six-week budget.</td></tr>
+      <tr><td>Database</td><td>MySQL 8, InnoDB, <code>utf8mb4</code>. Transactions and row-level locking are required by the oversell guard (FR-INV-4).</td></tr>
+      <tr><td>Layering</td><td><code>models</code> → <code>services</code> → <code>serializers</code> → <code>views</code>. Business rules — order placement, stock movement, coupon validation, payment confirmation — live in <code>services/</code>, never in views. Both the storefront API and the admin API call the same service functions, so rules cannot drift between them.</td></tr>
+      <tr><td>Apps</td><td><code>accounts</code>, <code>catalog</code>, <code>cart</code>, <code>orders</code>, <code>payments</code>, <code>promotions</code>, <code>reviews</code>, <code>shipping</code>, <code>dashboard</code>.</td></tr>
+      <tr><td>Auth</td><td><code>djangorestframework-simplejwt</code> with rotation and blacklisting.</td></tr>
+      <tr><td>Filtering</td><td><code>django-filter</code> for facets, DRF <code>SearchFilter</code> and <code>OrderingFilter</code> for search and sort.</td></tr>
+      <tr><td>Images</td><td><code>Pillow</code> for resize and format conversion on upload. Local <code>MEDIA_ROOT</code> in development, S3-compatible object storage in production via <code>django-storages</code>.</td></tr>
+      <tr><td>Email</td><td>Django's email backend over transactional SMTP. Console backend in development.</td></tr>
+      <tr><td>Background work</td><td><b>None in v1.</b> Email sends inline; the low-stock digest runs as a cron-invoked management command. Celery and Redis are deliberately deferred — the operational cost is not repaid at this scale.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 Frontend</h3>
+  <table class="tight">
+    <thead><tr><th style="width:30%">Concern</th><th>Choice and rationale</th></tr></thead>
+    <tbody>
+      <tr><td>Build</td><td>Vite. Fast dev server and straightforward production build.</td></tr>
+      <tr><td>Framework</td><td>React 18 as a single-page app with React Router. Storefront and admin are <b>route groups in one app</b> — one build pipeline, one component library, one auth layer for a solo developer to maintain. The admin bundle is code-split so shoppers never download it.</td></tr>
+      <tr><td>Styling</td><td>Tailwind CSS, mobile-first. A small set of shared primitives — Button, Input, Modal, Table, Badge — keeps the two route groups visually consistent without a component-library dependency.</td></tr>
+      <tr><td>Server state</td><td>TanStack Query for fetching, caching, and invalidation. Removes most hand-written loading and error state.</td></tr>
+      <tr><td>Client state</td><td>Zustand for cart and UI state. Cart persists to <code>localStorage</code> through Zustand's persist middleware, which is exactly the guest-cart requirement.</td></tr>
+      <tr><td>Forms</td><td>React Hook Form with Zod schemas. Zod schemas mirror the API contract so client validation and server validation stay aligned.</td></tr>
+      <tr><td>Charts</td><td>Recharts for the admin dashboard. Small, declarative, sufficient for revenue trend lines.</td></tr>
+      <tr><td>Routing guard</td><td>A route wrapper checks the decoded JWT role before rendering admin routes — a convenience, not the security boundary. The API enforces authorisation (§10).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.4 Environments</h3>
+  <table class="tight">
+    <thead><tr><th style="width:18%">Environment</th><th style="width:32%">Configuration</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Development</td><td>Local MySQL, Vite dev server on :5173, Django on :8000</td><td>CORS permits the Vite origin. SSLCommerz sandbox credentials.</td></tr>
+      <tr><td>Staging</td><td>Mirrors production; separate database</td><td>Where SSLCommerz sandbox end-to-end testing happens.</td></tr>
+      <tr><td>Production</td><td>Nginx, Gunicorn, managed MySQL, object storage</td><td>Live gateway credentials. <code>DEBUG=False</code>, strict <code>ALLOWED_HOSTS</code>.</td></tr>
+    </tbody>
+  </table>
+  <p>Settings split into <code>base.py</code>, <code>dev.py</code>, and <code>prod.py</code>. All secrets come from environment variables (§15.3) — nothing sensitive is committed.</p>
+</section>
+
+<!-- ============ 9 ============ -->
+<section>
+  <h2><span class="num">9</span>Non-Functional Requirements</h2>
+  <p class="lede">Quality bars the build is measured against, not aspirations.</p>
+
+  <h3>9.1 Performance</h3>
+  <table class="tight">
+    <thead><tr><th style="width:38%">Requirement</th><th style="width:20%">Target</th><th>Method</th></tr></thead>
+    <tbody>
+      <tr><td>Product list API response</td><td>p95 &lt; 500&nbsp;ms</td><td>Indexed queries, <code>select_related</code> / <code>prefetch_related</code>, no N+1</td></tr>
+      <tr><td>Product detail API response</td><td>p95 &lt; 400&nbsp;ms</td><td>Single query set with prefetched variants, images, specs</td></tr>
+      <tr><td>Largest Contentful Paint, mobile</td><td>&lt; 2.5&nbsp;s on 3G</td><td>Route-level code splitting, responsive images, lazy-loaded below-fold media</td></tr>
+      <tr><td>Storefront JS bundle, initial</td><td>&lt; 250&nbsp;KB gzipped</td><td>Admin routes split out; no heavyweight UI library</td></tr>
+      <tr><td>Concurrent checkout correctness</td><td>Zero oversells</td><td>Row-level locking, verified by a concurrency test</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 Responsiveness and browser support</h3>
+  <ul>
+    <li>Mobile-first. Breakpoints at 640, 768, 1024, and 1280&nbsp;px. Every flow must be completable one-handed on a 360&nbsp;px-wide viewport — that is the dominant device profile for this market.</li>
+    <li>Supported: current and previous major versions of Chrome, Firefox, Safari, and Edge; Chrome and Samsung Internet on Android; Safari on iOS 15+.</li>
+    <li>The admin dashboard is optimised for desktop but must remain usable on a tablet for order status updates.</li>
+  </ul>
+
+  <h3>9.3 Accessibility</h3>
+  <ul>
+    <li>WCAG 2.1 AA for colour contrast on text and interactive controls.</li>
+    <li>All interactive elements reachable and operable by keyboard, with a visible focus ring.</li>
+    <li>Every form input has an associated label; errors are announced through <code>aria-live</code>.</li>
+    <li>Every product image carries meaningful <code>alt</code> text drawn from the product name and variant.</li>
+    <li>Semantic headings and landmarks throughout, not <code>div</code> soup.</li>
+  </ul>
+
+  <h3>9.4 Reliability and operations</h3>
+  <ul>
+    <li>Target uptime 99.5% monthly, excluding announced maintenance.</li>
+    <li>Automated nightly database backup with 14-day retention. <b>A restore must be tested once before launch</b> — an untested backup is not a backup.</li>
+    <li>Application errors logged with request context; a 500 rate above 1% of requests triggers an alert.</li>
+    <li>Database migrations are forward-only and reviewed before production application.</li>
+  </ul>
+
+  <h3>9.5 Maintainability</h3>
+  <ul>
+    <li>Business logic in <code>services/</code> with unit tests for order placement, stock movement, coupon validation, and payment confirmation. These four are where money is lost when they break.</li>
+    <li>API contract documented via <code>drf-spectacular</code>, generating an OpenAPI schema and a browsable UI.</li>
+    <li><code>ruff</code> and <code>black</code> for Python; ESLint and Prettier for the frontend.</li>
+    <li>Seed script that populates categories, brands, ten sample products with variants and images, and a test coupon — so a fresh clone is demonstrable in one command.</li>
+  </ul>
+</section>
+
+<!-- ============ 10 ============ -->
+<section>
+  <h2><span class="num">10</span>Security &amp; Compliance</h2>
+  <p class="lede">This system handles money, addresses, and phone numbers. These requirements are not optional.</p>
+
+  <h3>10.1 Authentication and session security</h3>
+  <ul>
+    <li>Passwords hashed with Django's default PBKDF2 hasher. Django's password validators enforce minimum length and reject common passwords.</li>
+    <li>Access tokens are short-lived (15 minutes). Refresh tokens rotate on use and the old token is blacklisted, so a stolen refresh token has a narrow window.</li>
+    <li>Refresh tokens are stored in an <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Lax</code> cookie. The access token is held in memory only. Neither goes in <code>localStorage</code>, which is readable by any injected script.</li>
+    <li>Rate limits: 5 login attempts per email per 15 minutes; 3 password-reset requests per email per hour; 10 coupon validations per session per minute.</li>
+    <li>Password reset tokens are single-use and expire in 60 minutes.</li>
+  </ul>
+
+  <h3>10.2 Authorisation</h3>
+  <ul>
+    <li>Every admin endpoint carries an explicit DRF permission class. Hiding a button in React is <b>not</b> access control.</li>
+    <li>Object-level checks on all customer resources: a user may read only their own orders, addresses, cart, and wishlist. Enumerating another customer's order by changing an ID must return 404, not 403 — a 403 confirms the record exists.</li>
+    <li>Order references are non-sequential enough to resist guessing, and are still authorisation-checked on every access.</li>
+    <li>Staff role is enforced endpoint by endpoint, not by a single blanket check.</li>
+  </ul>
+
+  <h3>10.3 Payment security</h3>
+  <ul>
+    <li><b>No card data ever touches this application.</b> SSLCommerz hosted checkout means the store never sees, transmits, or stores a card number, which keeps PCI-DSS scope minimal.</li>
+    <li>Payment confirmation requires the server-side validation call against the gateway's validation API. The browser redirect is display only.</li>
+    <li>The IPN endpoint verifies the gateway signature and re-validates the transaction before changing any order state.</li>
+    <li>The paid amount is compared against the stored order total. A mismatch is logged and flagged for manual review rather than auto-confirmed.</li>
+    <li>Order totals are always recomputed server-side at placement. A client-supplied total is never trusted, in any code path.</li>
+  </ul>
+
+  <h3>10.4 Application security</h3>
+  <ul>
+    <li>HTTPS everywhere, HSTS enabled, <code>SECURE_SSL_REDIRECT=True</code> in production.</li>
+    <li>SQL injection prevented by using the ORM. Any raw SQL uses parameterised queries — never string interpolation.</li>
+    <li>XSS prevented by React's default escaping. Admin-authored rich-text descriptions are sanitised on save with an allowlist, not on render.</li>
+    <li>CORS restricted to known frontend origins. Wildcards are not used in production.</li>
+    <li>Uploads validated by content type and magnitude, re-encoded through Pillow to strip embedded payloads, and served from a separate origin or path that never executes code.</li>
+    <li><code>DEBUG=False</code> in production with a strict <code>ALLOWED_HOSTS</code>. Stack traces are never rendered to a user.</li>
+    <li>Dependencies pinned; <code>pip-audit</code> and <code>npm audit</code> run before each release.</li>
+  </ul>
+
+  <h3>10.5 Data handling</h3>
+  <ul>
+    <li>Personal data collected is limited to what fulfilment requires: name, email, phone, delivery address.</li>
+    <li>Order records retain address snapshots for accounting and dispute resolution even after a customer deletes a saved address.</li>
+    <li>Admin access to customer data is limited to the admin role; staff see only what an order requires.</li>
+    <li>A published privacy policy and terms of service are a launch prerequisite, not a follow-up task.</li>
+    <li>Database backups are encrypted at rest and access-restricted.</li>
+  </ul>
+</section>
+
+<!-- ============ 11 ============ -->
+<section>
+  <h2><span class="num">11</span>Analytics &amp; Events</h2>
+  <p class="lede">Without instrumentation, §3.3 cannot be measured. Instrument at launch, not after.</p>
+
+  <h3>11.1 Events to instrument</h3>
+  <table class="long tight">
+    <thead><tr><th style="width:26%">Event</th><th style="width:38%">Properties</th><th>Answers</th></tr></thead>
+    <tbody>
+      <tr><td><code>product_view</code></td><td>product_id, category, brand, price</td><td>What draws attention but does not convert</td></tr>
+      <tr><td><code>search_performed</code></td><td>query, result_count</td><td>What customers want that the catalogue lacks — zero-result queries are a buying list</td></tr>
+      <tr><td><code>filter_applied</code></td><td>facet, value</td><td>Which facets earn their build cost</td></tr>
+      <tr><td><code>add_to_cart</code></td><td>variant_id, quantity, price</td><td>Top of the purchase funnel</td></tr>
+      <tr><td><code>begin_checkout</code></td><td>cart_value, item_count</td><td>Denominator for abandonment</td></tr>
+      <tr><td><code>coupon_applied</code></td><td>code, discount_amount, outcome</td><td>Promotion effectiveness and rejection reasons</td></tr>
+      <tr><td><code>payment_method_selected</code></td><td>method</td><td>COD versus online split</td></tr>
+      <tr><td><code>purchase</code></td><td>order_reference, grand_total, item_count, payment_method, coupon</td><td>Conversion and average order value</td></tr>
+      <tr><td><code>order_cancelled</code></td><td>order_reference, status_at_cancel, reason</td><td>Where and why orders die</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.2 Approach</h3>
+  <ul>
+    <li>Google Analytics 4 for storefront behaviour, using its e-commerce event schema so standard funnel reports work without custom configuration.</li>
+    <li>Business reporting — revenue, orders, top products, low stock — is computed from the application database and shown in the admin dashboard. Money numbers come from the database, never from an analytics tool that drops events to ad blockers.</li>
+    <li>No personally identifiable information is sent to third-party analytics. Order references are acceptable; names, emails, phone numbers, and addresses are not.</li>
+    <li>A cookie-consent notice is required before any analytics cookie is set.</li>
+  </ul>
+
+  <h3>11.3 Admin reporting for v1</h3>
+  <ul>
+    <li>Revenue by day for the last 30 days, as a chart.</li>
+    <li>Order counts by status, as a snapshot.</li>
+    <li>Top 10 products by units sold and by revenue, over a selectable range.</li>
+    <li>COD versus online payment split.</li>
+    <li>Low-stock variants list.</li>
+  </ul>
+</section>
+
+<!-- ============ 12 ============ -->
+<section>
+  <h2><span class="num">12</span>Milestones &amp; Delivery Risk</h2>
+  <p class="lede">Six weeks, one developer. The plan and an honest account of what that costs.</p>
+
+  <h3>12.1 Week-by-week plan</h3>
+  <table class="long">
+    <thead><tr><th style="width:8%">Week</th><th style="width:44%">Deliverables</th><th>Exit criteria</th></tr></thead>
+    <tbody>
+      <tr><td><b>1</b></td><td>Django project, MySQL schema, custom user model, JWT auth, full data model and migrations, Vite + React + Tailwind scaffold, shared UI primitives, seed script.</td><td>A user can register and log in through the React UI. Seeded products are visible in the database.</td></tr>
+      <tr><td><b>2</b></td><td>Catalogue APIs (list, detail, related), search, facets, sort, pagination. Storefront: home, category, product listing, product detail with variant selection.</td><td>A shopper can browse, search, filter, and open any product page on a phone.</td></tr>
+      <tr><td><b>3</b></td><td>Cart with guest persistence and login merge, checkout flow, address capture, order placement, COD path, order history and detail, transactional emails.</td><td>An end-to-end COD order completes and appears in the database with correct totals.</td></tr>
+      <tr><td><b>4</b></td><td>SSLCommerz integration with callbacks and IPN validation, inventory decrement with row locking, shipping zones, tax calculation, oversell concurrency test.</td><td>A sandbox online payment confirms an order and decrements stock. Concurrent checkout test shows zero oversell.</td></tr>
+      <tr><td><b>5</b></td><td>Admin dashboard: overview, order pipeline, product and variant CRUD with image upload, inventory view, settings. Coupons, reviews with moderation, wishlist.</td><td>The owner can add a product and fulfil an order without touching the database.</td></tr>
+      <tr><td><b>6</b></td><td>QA across the full flow, accessibility pass, performance pass, real catalogue data load, production deployment, backup and restore rehearsal, analytics wiring.</td><td>Store is live, backed up, instrumented, and taking real orders.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.2 Delivery risk</h3>
+  <div class="warn"><b>Schedule assessment</b>Six weeks for one developer to deliver everything in §5 is aggressive. The feature set — catalogue with variants, cart, checkout, gateway integration, inventory locking, coupons, reviews, wishlist, and a bespoke admin dashboard — is realistically 8 to 10 weeks of solo work at a sustainable pace. This plan is achievable only with disciplined scope control and zero rework. Plan for what gets cut, and cut it deliberately rather than discovering the overrun in week five.</div>
+
+  <table class="long">
+    <thead><tr><th style="width:26%">Risk</th><th style="width:12%">Likelihood</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td>Admin dashboard consumes far more time than planned</td><td>High</td><td>The single largest schedule risk — a bespoke CRUD interface is genuinely more work than the storefront. <b>Fallback:</b> enable Django Admin from week 1 as an operational safety net. Fulfilment is then never blocked, and the React dashboard can ship as v1.1 without holding launch.</td></tr>
+      <tr><td>SSLCommerz integration stalls on merchant account or sandbox issues</td><td>Medium</td><td>Start the merchant account application in week 1, not week 4. COD alone is a launchable store; online payment can follow.</td></tr>
+      <tr><td>Real product data is not ready at launch</td><td>Medium</td><td>Begin collecting product photos, specs, and pricing in week 1, in parallel with the build. This is owner work, not developer work, and it is routinely underestimated.</td></tr>
+      <tr><td>Image handling and storage takes longer than expected</td><td>Medium</td><td>Use local storage for v1 with a storage-backend abstraction, so moving to object storage later is a configuration change.</td></tr>
+      <tr><td>Scope creep during the build</td><td>High</td><td>Anything not written in §5 goes to §13. New ideas are logged, not built.</td></tr>
+      <tr><td>Concurrency and payment edge cases surface late</td><td>Medium</td><td>Write the oversell and IPN-idempotency tests in week 4 when the code is written, not in week 6 QA.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.3 Cut order</h3>
+  <p>If week 5 arrives behind schedule, drop in this order — highest number first — and launch on time:</p>
+  <table class="tight">
+    <thead><tr><th style="width:10%">Order</th><th style="width:34%">Feature</th><th>Consequence of cutting</th></tr></thead>
+    <tbody>
+      <tr><td>1st</td><td>Search-as-you-type, CSV export, review sorting</td><td>None material. Pure polish.</td></tr>
+      <tr><td>2nd</td><td>Wishlist</td><td>Loses a re-engagement hook. No effect on transacting.</td></tr>
+      <tr><td>3rd</td><td>Reviews and ratings</td><td>Loses social proof. New stores have no reviews at launch anyway, so day-one impact is near zero.</td></tr>
+      <tr><td>4th</td><td>Custom React admin dashboard</td><td>Falls back to Django Admin. Worse owner experience, fully functional store.</td></tr>
+      <tr><td>5th</td><td>Coupons</td><td>No promotions at launch. Defer any planned launch campaign.</td></tr>
+      <tr><td>Never</td><td>Catalogue, cart, checkout, payments, inventory, orders</td><td>Cutting any of these means there is no store.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 13 ============ -->
+<section>
+  <h2><span class="num">13</span>Out of Scope &amp; v2 Roadmap</h2>
+  <p class="lede">Written down so it can be pointed at when someone asks mid-build.</p>
+
+  <h3>13.1 Explicitly out of scope for v1</h3>
+  <table class="tight">
+    <thead><tr><th style="width:34%">Item</th><th>Why it is excluded</th></tr></thead>
+    <tbody>
+      <tr><td>Multi-vendor / marketplace</td><td>Contradicts the single-vendor premise. Would require seller accounts, commissions, and payouts.</td></tr>
+      <tr><td>Native mobile apps</td><td>The mobile-first web app is the mobile strategy for v1.</td></tr>
+      <tr><td>Returns / RMA workflow</td><td>Handled offline by phone. A structured workflow is a v2 feature once volume justifies it.</td></tr>
+      <tr><td>Loyalty points and referrals</td><td>No retention problem to solve before there are customers to retain.</td></tr>
+      <tr><td>Live chat</td><td>Phone and messaging already cover this at current volume.</td></tr>
+      <tr><td>Multi-currency and multi-language</td><td>BDT and English only in v1.</td></tr>
+      <tr><td>Recommendation engine</td><td>Same-category related products (FR-CAT-6) is sufficient without behavioural data to learn from.</td></tr>
+      <tr><td>Courier API integration</td><td>Tracking numbers are entered manually in v1.</td></tr>
+      <tr><td>Product comparison tool</td><td>Valuable for electronics, but not launch-critical.</td></tr>
+      <tr><td>Gift cards and store credit</td><td>Adds a payment-source concept the order model does not need yet.</td></tr>
+      <tr><td>Abandoned-cart email recovery</td><td>Requires the background job infrastructure deliberately deferred in §8.2.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.2 v2 candidates, in likely priority order</h3>
+  <ol class="body">
+    <li><b>Courier integration</b> (Pathao, Steadfast, RedX) — automatic booking and tracking, removing the largest remaining manual step.</li>
+    <li><b>Abandoned-cart recovery emails</b> — direct, measurable revenue against a known abandonment number.</li>
+    <li><b>Bengali language support</b> — widens the addressable market meaningfully in this market.</li>
+    <li><b>Product comparison</b> — high value for electronics buyers deciding between two models.</li>
+    <li><b>Returns and RMA workflow</b> — once return volume becomes an operational burden.</li>
+    <li><b>Advanced analytics</b> — cohort retention, product-level margin reporting.</li>
+    <li><b>PWA with offline catalogue browsing</b> — meaningful on intermittent mobile connections.</li>
+    <li><b>Loyalty programme</b> — once a repeat-customer base exists.</li>
+  </ol>
+</section>
+
+<!-- ============ 14 ============ -->
+<section>
+  <h2><span class="num">14</span>Open Questions</h2>
+  <p class="lede">Each of these blocks something. Owner and deadline are named so none of them quietly stalls the build.</p>
+  <table class="long">
+    <thead><tr><th style="width:5%">#</th><th style="width:32%">Question</th><th style="width:14%">Blocks</th><th>Needed by</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Is an SSLCommerz merchant account approved, or does the application still need to be submitted?</td><td>Online payment (§5.5)</td><td><b>Week 1.</b> Approval can take days to weeks. This is the single most likely external blocker.</td></tr>
+      <tr><td>2</td><td>What VAT rate applies to this store's online electronics sales, and is the business VAT-registered?</td><td>Tax calculation (§5.12)</td><td><b>Week 4.</b> Requires an accountant's confirmation. The system is rate-agnostic, so only the configured value is pending.</td></tr>
+      <tr><td>3</td><td>What are the actual shipping rates for inside and outside Dhaka, and is there a free-shipping threshold?</td><td>Shipping (§5.12)</td><td>Week 4. Owner decision.</td></tr>
+      <tr><td>4</td><td>What is the maximum order value permitted on COD?</td><td>Payments (§5.5)</td><td>Week 3. A risk decision — high-value COD orders that are refused cost real money.</td></tr>
+      <tr><td>5</td><td>Which domain will the store use, and where is it hosted?</td><td>Deployment (§8.4)</td><td>Week 4. Affects TLS setup and gateway callback URL registration.</td></tr>
+      <tr><td>6</td><td>How will the initial catalogue be assembled — photos, specifications, and prices?</td><td>Launch content</td><td><b>Start week 1.</b> Frequently the true launch blocker, and it is owner work running parallel to development.</td></tr>
+      <tr><td>7</td><td>What are the return and warranty policy terms to publish?</td><td>Policy pages</td><td>Week 5. Required before taking real money.</td></tr>
+      <tr><td>8</td><td>Which courier or couriers will be used, and are accounts open?</td><td>Fulfilment</td><td>Week 5. Manual entry in v1, so it does not block code.</td></tr>
+      <tr><td>9</td><td>Which email service will send transactional mail, and is a sending domain verified?</td><td>Notifications (§5.6)</td><td>Week 3. Domain verification and DNS records take time to propagate.</td></tr>
+      <tr><td>10</td><td>Does anyone besides the owner need admin access, and at which role?</td><td>Roles (§5.7)</td><td>Week 5.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 15 ============ -->
+<section>
+  <h2><span class="num">15</span>Appendix</h2>
+
+  <h3>15.1 Order status state machine</h3>
+<pre class="dia">
+                    ┌──────────────► cancelled ◄──────────┐
+                    │                                     │
+                    │                                     │
+  pending ──────► confirmed ──────► packed ──────► shipped ──────► delivered
+     │                │                                              │
+     │                │                                              │
+     └──► cancelled   └──► refunded ◄────────────────────────────────┘
+
+  Transition rules
+  ────────────────
+  pending   → confirmed   COD placement, or validated online payment. Decrements stock.
+  pending   → cancelled   Customer or admin. No stock change (never decremented).
+  confirmed → packed      Admin only.
+  confirmed → cancelled   Customer or admin. Restores stock. Releases coupon redemption.
+  packed    → shipped     Admin only. Requires courier + tracking number.
+  packed    → cancelled   Admin only. Restores stock.
+  shipped   → delivered   Admin only. Unlocks review eligibility for the items.
+  shipped   → cancelled   Admin only (failed delivery / COD refusal). Restores stock.
+  delivered → refunded    Admin only. Manual record; no gateway call in v1.
+
+  Terminal states: delivered, cancelled, refunded.
+  Any transition not listed is rejected with 422 and is not logged as a state change.
+</pre>
+
+  <h3>15.2 Sample coupon configurations</h3>
+  <table class="tight">
+    <thead><tr><th style="width:18%">Code</th><th style="width:20%">Type</th><th>Rules</th></tr></thead>
+    <tbody>
+      <tr><td><code>WELCOME10</code></td><td>10% off, max BDT 1,000</td><td>Minimum order BDT 3,000. One use per customer. All products.</td></tr>
+      <tr><td><code>FREESHIP</code></td><td>Fixed, equal to shipping</td><td>Minimum order BDT 5,000. 500 total uses. All products.</td></tr>
+      <tr><td><code>LAPTOP5</code></td><td>5% off</td><td>Scoped to the Laptops category. Valid for 14 days. No minimum.</td></tr>
+      <tr><td><code>EIDSALE</code></td><td>Fixed BDT 500 off</td><td>Minimum order BDT 4,000. Fixed validity window. 1,000 total uses, 1 per customer.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.3 Environment variables</h3>
+  <table class="long tight">
+    <thead><tr><th style="width:34%">Variable</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>DJANGO_SECRET_KEY</code></td><td>Cryptographic signing key. Unique per environment, never committed.</td></tr>
+      <tr><td><code>DJANGO_DEBUG</code></td><td><code>False</code> in production, without exception.</td></tr>
+      <tr><td><code>DJANGO_ALLOWED_HOSTS</code></td><td>Comma-separated production hostnames.</td></tr>
+      <tr><td><code>DATABASE_URL</code></td><td>MySQL connection string.</td></tr>
+      <tr><td><code>CORS_ALLOWED_ORIGINS</code></td><td>Frontend origins permitted to call the API.</td></tr>
+      <tr><td><code>SSLCOMMERZ_STORE_ID</code> / <code>_PASSWORD</code></td><td>Gateway credentials. Sandbox in dev and staging, live in production.</td></tr>
+      <tr><td><code>SSLCOMMERZ_SANDBOX</code></td><td>Toggles sandbox versus live gateway endpoints.</td></tr>
+      <tr><td><code>EMAIL_HOST</code> / <code>_PORT</code> / <code>_USER</code> / <code>_PASSWORD</code></td><td>Transactional SMTP settings.</td></tr>
+      <tr><td><code>DEFAULT_FROM_EMAIL</code></td><td>Sender address on customer email.</td></tr>
+      <tr><td><code>MEDIA_STORAGE_BACKEND</code></td><td><code>local</code> or <code>s3</code>.</td></tr>
+      <tr><td><code>AWS_*</code></td><td>Object storage credentials and bucket, when the S3 backend is selected.</td></tr>
+      <tr><td><code>VITE_API_BASE_URL</code></td><td>API base URL consumed by the frontend build.</td></tr>
+      <tr><td><code>VITE_GA_MEASUREMENT_ID</code></td><td>Google Analytics 4 measurement ID.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.4 Glossary</h3>
+  <table class="tight">
+    <thead><tr><th style="width:24%">Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td>Variant</td><td>A specific purchasable configuration of a product — a colour, storage size, or RAM option. Price and stock attach here, not to the product.</td></tr>
+      <tr><td>SKU</td><td>Stock Keeping Unit. The unique code identifying one variant.</td></tr>
+      <tr><td>COD</td><td>Cash on Delivery. Payment collected by the courier at the door.</td></tr>
+      <tr><td>IPN</td><td>Instant Payment Notification. The gateway's server-to-server callback confirming a transaction — the authoritative payment signal.</td></tr>
+      <tr><td>Idempotency key</td><td>A client-generated unique value that lets the server recognise a retried request and avoid creating a duplicate order.</td></tr>
+      <tr><td>Snapshot</td><td>Copying values onto an order at purchase time so later catalogue edits cannot alter order history.</td></tr>
+      <tr><td>Oversell</td><td>Accepting more orders for an item than stock exists to fulfil.</td></tr>
+      <tr><td>Facet</td><td>A filter dimension in search — brand, price range, availability.</td></tr>
+      <tr><td>Verified Purchase</td><td>A review from a customer with a delivered order containing that product.</td></tr>
+      <tr><td>P0 / P1 / P2</td><td>Priority: must have, should have, nice to have. See §1.3.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="end">End of document · PRD v1.0 · Single-Vendor Electronics E-Commerce Web Application · 18 August 2026</p>
+</section>
+
+</body>
+</html>

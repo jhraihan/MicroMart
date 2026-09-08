@@ -1,0 +1,35 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Playwright (e2e). Reports and traces are run artefacts, never committed;
+# .last-run.json is the "only failed tests" bookkeeping.
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
+.last-run.json
+.vercel
+.env*
+!.env.example

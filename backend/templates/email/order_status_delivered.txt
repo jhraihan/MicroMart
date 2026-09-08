@@ -1,0 +1,9 @@
+Your order {{ order.reference }} has been delivered.
+
+We hope everything arrived in good order. You can now leave a review for
+anything you bought -- it helps the next buyer more than you would think.
+
+{% include "email/_order_summary.txt" %}
+Review your purchase: {{ order_url }}
+
+-- {{ store.store_name }}

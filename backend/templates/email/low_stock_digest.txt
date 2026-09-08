@@ -1,0 +1,9 @@
+{{ count }} variant(s) are at or below their low-stock threshold.
+
+{% for variant in variants %}{{ variant.stock }} left (threshold {{ variant.low_stock_threshold }})  {{ variant.sku }}
+    {{ variant.product.name }}{% if variant.option_label %} - {{ variant.option_label }}{% endif %}  {{ currency_symbol }}{{ variant.price }}
+{% empty %}Nothing is below threshold today.
+{% endfor %}
+Restock here: {{ admin_url }}
+
+-- {{ store.store_name }} inventory digest

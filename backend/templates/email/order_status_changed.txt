@@ -1,0 +1,9 @@
+Update on your order {{ order.reference }}.
+
+Status: {{ order.get_status_display }}{% if note %}
+Note: {{ note }}{% endif %}
+
+{% include "email/_order_summary.txt" %}
+Track this order: {{ order_url }}
+
+-- {{ store.store_name }}

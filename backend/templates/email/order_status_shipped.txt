@@ -1,0 +1,9 @@
+Your order {{ order.reference }} is on its way.
+
+{% if shipment %}Courier         : {{ shipment.courier_name }}
+Tracking number : {{ shipment.tracking_number }}
+{% endif %}
+{% include "email/_order_summary.txt" %}
+Track this order: {{ order_url }}
+
+-- {{ store.store_name }}

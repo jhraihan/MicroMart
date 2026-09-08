@@ -1,0 +1,117 @@
+name: CI
+
+# Runs on every push and pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        # Temporary MySQL database used only by GitHub Actions.
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-root
+          MYSQL_DATABASE: micromart_db
+          MYSQL_USER: ecom
+          MYSQL_PASSWORD: ci-ecom
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pci-root"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements/*.txt
+
+      - name: Install MySQL client headers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pkg-config default-libmysqlclient-dev
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/dev.txt
+
+      - name: Grant the test database
+        # Django/pytest-django creates test_micromart_db automatically.
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -uroot -pci-root -e \
+            "GRANT ALL PRIVILEGES ON \`test_micromart_db\`.* TO 'ecom'@'%'; FLUSH PRIVILEGES;"
+
+      - name: Django checks
+        working-directory: backend
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
+          DATABASE_URL: mysql://ecom:ci-ecom@127.0.0.1:3306/micromart_db
+          DJANGO_DEBUG: 'True'
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+
+      - name: API schema still generates
+        working-directory: backend
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
+          DATABASE_URL: mysql://ecom:ci-ecom@127.0.0.1:3306/micromart_db
+          DJANGO_DEBUG: 'True'
+        run: python manage.py spectacular --file /dev/null
+
+      - name: Pytest
+        working-directory: backend
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
+          DATABASE_URL: mysql://ecom:ci-ecom@127.0.0.1:3306/micromart_db
+          DJANGO_DEBUG: 'True'
+        run: python -m pytest -q
+
+  frontend:
+    name: Frontend tests, lint and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Unit tests
+        working-directory: frontend
+        run: npm run test
+
+      - name: Build
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: http://localhost:8000/api/v1
+        run: npm run build

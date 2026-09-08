@@ -1,0 +1,14 @@
+Thank you for your order.
+
+{% if order.status == "confirmed" %}Your order is confirmed and we are preparing it for dispatch.
+You will pay {{ currency_symbol }}{{ order.grand_total }} in cash when the courier hands it over.{% else %}We have received your order and are waiting for your payment to clear.
+Your items are not held until payment is confirmed, so please complete it soon.{% endif %}
+
+{% include "email/_order_summary.txt" %}
+{% if order.note %}
+Your note: {{ order.note }}
+{% endif %}
+Track this order: {{ order_url }}
+
+-- {{ store.store_name }}{% if store.support_email %}
+Questions? {{ store.support_email }}{% endif %}{% if store.support_phone %} / {{ store.support_phone }}{% endif %}

@@ -1,0 +1,9 @@
+Your order {{ order.reference }} has been cancelled.
+
+{% if note %}Reason: {{ note }}
+{% endif %}Any stock held for this order has been released.{% if order.payment_method == "online" %} If you were charged,
+the refund is recorded manually by our team -- contact us if you do not hear back.{% endif %}
+
+{% include "email/_order_summary.txt" %}
+-- {{ store.store_name }}{% if store.support_email %}
+Questions? {{ store.support_email }}{% endif %}

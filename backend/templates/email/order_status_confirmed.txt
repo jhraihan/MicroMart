@@ -1,0 +1,9 @@
+Your order {{ order.reference }} is confirmed.
+
+Payment is settled and your items are reserved. We will let you know as soon
+as the parcel is on its way.
+
+{% include "email/_order_summary.txt" %}
+Track this order: {{ order_url }}
+
+-- {{ store.store_name }}
