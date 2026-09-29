@@ -1,0 +1,30 @@
+# Secrets. backend/.env would otherwise be baked into the image, and base.py
+# reads it on start-up.
+**/.env
+**/.env.*
+!**/.env.example
+
+# Rebuilt inside the image.
+**/node_modules
+frontend/dist
+backend/staticfiles
+
+# Local state that must not ship. Production media lives on a disk or in a
+# bucket, not in the image.
+backend/.venv
+backend/media
+backend/scripts/data
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.coverage
+htmlcov
+frontend/test-results
+frontend/playwright-report
+
+# Not needed to run.
+.git
+.github
+_private_notes
+docs
+*.md

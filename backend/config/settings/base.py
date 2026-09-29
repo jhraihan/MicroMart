@@ -98,6 +98,27 @@ DATABASES["default"]["OPTIONS"].update(
 )
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("DB_CONN_MAX_AGE", default=60)
 
+# Managed MySQL providers accept only TLS connections. DB_SSL_CA is the path to
+# the provider's CA certificate -- on Render, upload it as a Secret File and it
+# is mounted under /etc/secrets/. Unset, the connection is plain, which is
+# right for a database on the same host or private network.
+DB_SSL_CA = env("DB_SSL_CA", default="")
+if DB_SSL_CA:
+    DATABASES["default"]["OPTIONS"]["ssl"] = {"ca": DB_SSL_CA}
+
+# Providers hand out URLs ending in ?ssl-mode=REQUIRED. django-environ passes
+# that through as an OPTIONS key, and mysqlclient rejects "ssl-mode" as an
+# unknown argument -- so the URL exactly as copied would never connect. TLS is
+# governed by DB_SSL_CA above; the parameter only tells us it is expected.
+_ssl_mode = str(DATABASES["default"]["OPTIONS"].pop("ssl-mode", "")).upper()
+if _ssl_mode and _ssl_mode != "DISABLED" and not DB_SSL_CA:
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        f"DATABASE_URL asks for ssl-mode={_ssl_mode}, but DB_SSL_CA is not set. "
+        "Download the provider's CA certificate and point DB_SSL_CA at it."
+    )
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --------------------------------------------------------------------------

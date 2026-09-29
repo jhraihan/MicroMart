@@ -51,3 +51,11 @@ elif settings.MEDIA_STORAGE_BACKEND != "s3":
     urlpatterns += [
         re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT})
     ]
+
+if getattr(settings, "SERVE_SPA", False):
+    # Last, so it only answers what nothing above claimed.
+    from django.urls import re_path
+
+    from apps.common import spa
+
+    urlpatterns += [re_path(spa.ROUTE, spa.index, name="spa")]

@@ -115,3 +115,49 @@ jobs:
         env:
           VITE_API_BASE_URL: http://localhost:8000/api/v1
         run: npm run build
+  image:
+    name: Production image builds and boots
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-root
+          MYSQL_DATABASE: micromart_db
+          MYSQL_USER: ecom
+          MYSQL_PASSWORD: ci-ecom
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pci-root"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the image Render deploys
+        run: docker build -t micromart:ci .
+
+      # Boots the image exactly as Render starts it -- entrypoint, migrations,
+      # cache table, Gunicorn -- and asks for what a browser would.
+      - name: Boot it and request the storefront
+        run: |
+          docker run -d --name app --network host \
+            -e DJANGO_SECRET_KEY=ci-only-not-a-secret-but-long-enough-for-the-check \
+            -e DATABASE_URL=mysql://ecom:ci-ecom@127.0.0.1:3306/micromart_db \
+            -e DJANGO_ALLOWED_HOSTS=localhost \
+            -e EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend \
+            micromart:ci
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8000/healthz/ >/dev/null && break
+            sleep 2
+          done
+          docker logs app
+          https='-H X-Forwarded-Proto:https'
+          curl -sf $https http://localhost:8000/readyz/
+          curl -sf $https http://localhost:8000/p/any-product | grep -q '<div id="root">'
+          curl -sf $https "http://localhost:8000/api/v1/products/?page_size=1" >/dev/null
+          test "$(curl -s -o /dev/null -w '%{http_code}' $https http://localhost:8000/api/v1/nope/)" = 404

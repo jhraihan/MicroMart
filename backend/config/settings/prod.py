@@ -1,9 +1,39 @@
 """Production settings. DEBUG is False here without exception (PRD §10.4)."""
+import re
+from pathlib import Path
+
+from django.core.exceptions import ImproperlyConfigured
+
 from .base import *  # noqa: F401,F403
-from .base import MIDDLEWARE, REFRESH_COOKIE_SAMESITE, env
+from .base import BASE_DIR, MIDDLEWARE, REFRESH_COOKIE_SAMESITE, env
 
 DEBUG = False
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+
+# Render sets RENDER_EXTERNAL_HOSTNAME to the service's public host
+# (micromart.onrender.com), so a fresh service needs no host configured by
+# hand. A custom domain is added through DJANGO_ALLOWED_HOSTS as usual.
+RENDER_EXTERNAL_HOSTNAME = env("RENDER_EXTERNAL_HOSTNAME", default="")
+
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+if not ALLOWED_HOSTS:
+    raise ImproperlyConfigured(
+        "Set DJANGO_ALLOWED_HOSTS -- with DEBUG off, an empty list refuses every request."
+    )
+
+# Emails, sitemap and payment redirects link to the storefront. On Render the
+# SPA is served by this same service, so its own public URL is the default.
+FRONTEND_BASE_URL = env(
+    "FRONTEND_BASE_URL",
+    default=f"https://{RENDER_EXTERNAL_HOSTNAME}" if RENDER_EXTERNAL_HOSTNAME else "",
+)
+
+# Throttle counters must be shared across Gunicorn workers (see base.py). The
+# database cache is shared by construction and needs no extra service; point
+# CACHE_URL at Redis instead if the request rate ever makes that worth it.
+# `manage.py createcachetable` creates the table -- scripts/start.sh runs it.
+CACHES = {"default": env.cache("CACHE_URL", default="dbcache://django_cache")}
 
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
@@ -53,6 +83,9 @@ if REFRESH_COOKIE_SAMESITE == "None" and not CORS_ALLOWED_ORIGINS:  # noqa: F405
     )
 
 SECURE_SSL_REDIRECT = True
+# A platform health check may call the container over plain HTTP from inside
+# the network; answering it with a redirect would read as a failure.
+SECURE_REDIRECT_EXEMPT = [r"^healthz/$", r"^readyz/$"]
 SECURE_HSTS_SECONDS = 31_536_000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
@@ -61,8 +94,42 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+if RENDER_EXTERNAL_HOSTNAME:
+    # Django Admin's login form is the one CSRF-protected form in the app.
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 X_FRAME_OPTIONS = "DENY"
 REFRESH_COOKIE_SECURE = True
+
+# ---------------------------------------------------------------------------
+# The storefront, served by this process
+# ---------------------------------------------------------------------------
+# The PRD's architecture puts Nginx in front and serves the React build from
+# there. On a platform without that proxy the SPA is served from here instead,
+# which keeps the browser on one origin -- and that is not just convenience.
+# A separate static site on *.onrender.com would be a different *site* from
+# the API (onrender.com is on the Public Suffix List), so the Lax refresh
+# cookie would never be sent and Safari/Firefox would block a SameSite=None
+# one as third-party. One origin is the same arrangement the Vite dev proxy
+# gives in development.
+#
+# The Dockerfile copies `npm run build` output here. Absent (a plain Gunicorn
+# deployment behind Nginx), nothing below switches on.
+FRONTEND_DIST_DIR = Path(env("FRONTEND_DIST_DIR", default=str(BASE_DIR / "frontend_dist")))
+SERVE_SPA = (FRONTEND_DIST_DIR / "index.html").is_file()
+
+if SERVE_SPA:
+    # /assets/*, the favicon and anything else in the build are answered by
+    # WhiteNoise at the site root before Django is reached. index.html itself
+    # is not -- deep links such as /p/<slug> need it too, so a catch-all view
+    # in config/urls.py serves it with no-cache.
+    WHITENOISE_ROOT = FRONTEND_DIST_DIR
+
+    _VITE_HASHED_ASSET = re.compile(r"^/assets/.+-[A-Za-z0-9_-]{8}\.[a-z0-9]+$")
+
+    def WHITENOISE_IMMUTABLE_FILE_TEST(path, url):
+        # Vite fingerprints every file under /assets/, so a changed file is a
+        # new URL and the old one can be cached forever.
+        return bool(_VITE_HASHED_ASSET.match(url))
 
 if env("MEDIA_STORAGE_BACKEND", default="local") == "s3":
     # Only `default` (uploaded media) moves to S3. Static files stay with
@@ -80,3 +147,12 @@ if env("MEDIA_STORAGE_BACKEND", default="local") == "s3":
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="ap-south-1")
     AWS_QUERYSTRING_AUTH = False
+    # S3-compatible stores other than AWS (Cloudflare R2, Backblaze B2) are
+    # reached through their own endpoint. R2 wants region "auto".
+    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", default=None)
+    # The public host images are served from -- R2's pub-<id>.r2.dev address
+    # or a custom domain. Without it, URLs point at the API endpoint, which
+    # R2 does not serve publicly.
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWRITE = False

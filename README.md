@@ -303,6 +303,10 @@ frontend/
 <http://localhost:8000/api/docs/>. All 64 endpoints, generated from the code,
 with a "Try it out" button on each. The raw schema is at `/api/schema/`.
 
+**Deploying** — [to Render](docs/DEPLOY-RENDER.md): one Docker service serving
+the API and the storefront from a single origin, with managed MySQL and
+Cloudflare R2 for images.
+
 **Also in `docs/`** — [running the project](docs/RUNNING-THE-PROJECT.md),
 [MySQL setup](docs/MYSQL-SETUP.md), the API contracts, and the
 [design system](docs/design-system.md).
@@ -318,8 +322,9 @@ worth reading:
   and verification are built and tested against a stubbed gateway; live
   merchant credentials are not in place, so Cash on Delivery is the working
   payment path.
-- **No Docker setup.** Health endpoints (`/healthz/`, `/readyz/`) are in place
-  for one.
+- **No Docker Compose for local development.** Production has a Dockerfile
+  and a Render Blueprint ([deploying](docs/DEPLOY-RENDER.md)); locally you
+  still run MySQL, Django and Vite yourself.
 - **No background job queue.** Emails send inline, which is fine at this scale
   — `EMAIL_TIMEOUT` is set so a slow mail server cannot hold a worker.
 - **The Playwright suite does not run in CI.** It needs a live server and a

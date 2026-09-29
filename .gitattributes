@@ -1,0 +1,4 @@
+# Shell scripts run inside a Linux container; a CRLF line ending turns the
+# shebang into "/bin/sh\r" and the container fails to start.
+*.sh text eol=lf
+Dockerfile text eol=lf

@@ -1,0 +1,78 @@
+# Render Blueprint -- one Docker web service serving the API and the storefront.
+#
+# The database (managed MySQL over TLS) and image storage (Cloudflare R2) live
+# outside Render; their credentials are asked for when the Blueprint is
+# created. Step-by-step setup: docs/DEPLOY-RENDER.md.
+services:
+  - type: web
+    name: micromart
+    runtime: docker
+    plan: free
+    # Nearest region to Bangladesh. Keep the database in the same region --
+    # every API request makes several round trips to it.
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # Liveness only. /readyz/ also checks the database, and a database blip
+    # should not get a healthy process restarted (apps/common/health.py).
+    healthCheckPath: /healthz/
+    envVars:
+      # --- Django ---------------------------------------------------------
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+      # --- Database: managed MySQL 8 --------------------------------------
+      # Paste the provider's connection string as-is, ?ssl-mode included.
+      - key: DATABASE_URL
+        sync: false
+      # Upload the provider's CA certificate as a Secret File named ca.pem.
+      - key: DB_SSL_CA
+        value: /etc/secrets/ca.pem
+
+      # --- Media: the container's own disk ---------------------------------
+      # The free plan has no persistent disk, so uploaded media does not
+      # survive a deploy or a spin-down. The catalogue does not depend on it:
+      # fetch_media re-downloads the product photography on every boot (see
+      # below), and writes through the storage backend configured here.
+      #
+      # The trade-off is that images uploaded through the admin are lost on
+      # the next deploy. To keep those, point this at an S3-compatible bucket
+      # instead -- set MEDIA_STORAGE_BACKEND to "s3" and add the credentials
+      # prod.py reads: AWS_STORAGE_BUCKET_NAME, AWS_S3_ENDPOINT_URL,
+      # AWS_S3_CUSTOM_DOMAIN, AWS_S3_REGION_NAME, AWS_ACCESS_KEY_ID and
+      # AWS_SECRET_ACCESS_KEY. Cloudflare R2 and Backblaze B2 both require a
+      # payment method before they will serve a bucket publicly.
+      - key: MEDIA_STORAGE_BACKEND
+        value: local
+
+      # --- Every deploy ----------------------------------------------------
+      # Seeds the demo accounts and the 117-product catalogue, then fetches
+      # real photography in the background. Both are idempotent, and both stay
+      # on: with MEDIA_STORAGE_BACKEND=local the images live on a disk that is
+      # wiped on every deploy, so fetch_media has to run again to restore them.
+      # The fetch is backgrounded in start.sh and does not delay the first
+      # request; photographs appear over the minute or two after a cold start.
+      - key: SEED_ON_START
+        value: "true"
+      - key: FETCH_MEDIA_ON_START
+        value: "true"
+      # The seeded admin's password. Never the README's published default.
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false
+
+      # --- Storefront (build-time: Vite inlines these into the bundle) ----
+      # Shows the shared demo *customer* login on the sign-in page. The admin
+      # login stays private (VITE_SHOW_DEMO_ADMIN is left off).
+      - key: VITE_SHOW_DEMO_CREDENTIALS
+        value: "true"
+
+      # --- Integrations not yet connected ---------------------------------
+      # No SMTP provider chosen (PRD §14 Q9): emails go to the service log.
+      - key: EMAIL_BACKEND
+        value: django.core.mail.backends.console.EmailBackend
+      # SSLCommerz is built but has no merchant credentials; COD is the
+      # working payment path.
+      - key: SSLCOMMERZ_SANDBOX
+        value: "true"

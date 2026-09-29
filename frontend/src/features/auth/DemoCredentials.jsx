@@ -1,22 +1,27 @@
 // Seeded demo logins, offered as one-tap fill.
-const ACCOUNTS = [
-  {
-    role: 'Customer',
-    email: 'shopper@example.com',
-    password: 'Str0ngPass!2026',
-    note: 'Normal storefront account.',
-  },
-  {
-    role: 'Admin',
-    email: 'admin@example.com',
-    password: 'ChangeMe!2026',
-    note: 'Unlocks /admin and Django admin.',
-  },
-]
+const CUSTOMER = {
+  role: 'Customer',
+  email: 'shopper@example.com',
+  password: 'Str0ngPass!2026',
+  note: 'Normal storefront account.',
+}
+
+// The admin row is a separate opt-in. A public demo can hand out the shopper
+// account freely; handing out this one lets any visitor edit the catalogue,
+// and the server must also have been seeded with this exact password.
+const ADMIN = {
+  role: 'Admin',
+  email: 'admin@example.com',
+  password: 'ChangeMe!2026',
+  note: 'Unlocks /admin and Django admin.',
+}
+
+// Compared as strings: Vite exposes env vars verbatim, so an unset variable
+// is undefined and anything other than the exact opt-in is off.
+const ACCOUNTS =
+  import.meta.env.VITE_SHOW_DEMO_ADMIN === 'true' ? [CUSTOMER, ADMIN] : [CUSTOMER]
 
 export default function DemoCredentials({ onPick }) {
-  // Compared as a string: Vite exposes env vars verbatim, so an unset
-  // variable is undefined and anything other than the exact opt-in is off.
   if (import.meta.env.VITE_SHOW_DEMO_CREDENTIALS !== 'true') return null
 
   return (
