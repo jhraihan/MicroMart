@@ -38,6 +38,31 @@ from apps.catalog.seed_data import wikimedia
 REPRESENTATIVE_PREFIX = "Representative image"
 
 
+def _file_is_stored(field_file):
+    """
+    True when the field points at a file the storage backend actually holds.
+
+    A database row is not proof that the bytes exist. On a host without a
+    persistent disk the media directory starts empty on every deploy, while
+    the rows -- and their source_url -- survive in the database. Checking the
+    row alone would skip exactly the images that need refetching, leaving the
+    storefront pointing at files that are not there.
+    """
+    if not field_file:
+        return False
+    try:
+        return field_file.storage.exists(field_file.name)
+    except (NotImplementedError, OSError):
+        # A backend that cannot answer (some remote stores) is taken at its
+        # word: the row stands, and --force is the way to refetch.
+        return True
+
+
+def _has_stored_file(images):
+    """True when at least one of `images` has its file on disk."""
+    return any(_file_is_stored(image.image) for image in images)
+
+
 class Command(BaseCommand):
     help = "Fetch real openly-licensed product and brand images from Wikimedia."
 
@@ -90,7 +115,7 @@ class Command(BaseCommand):
         exact = representative = skipped = failed = 0
 
         for product in products:
-            already_real = product.images.exclude(source_url="").exists()
+            already_real = _has_stored_file(product.images.exclude(source_url=""))
             if already_real and not options["force"]:
                 skipped += 1
                 continue
@@ -171,7 +196,11 @@ class Command(BaseCommand):
         fetched = skipped = failed = 0
 
         for brand in Brand.objects.order_by("name"):
-            if brand.logo_source_url and not options["force"]:
+            if (
+                brand.logo_source_url
+                and _file_is_stored(brand.logo)
+                and not options["force"]
+            ):
                 skipped += 1
                 continue
 
